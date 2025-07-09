@@ -24,6 +24,7 @@ import Forbidden from "../Pages/Forbidden";
 import AdminProtector from "./AdminProtector";
 import ModeratorProtector from "./ModeratorProtector";
 import AllScholarship from "../Pages/AllScholarship";
+import ScholarshipDetails from "../Pages/ScholarshipDetails";
 
 export const router = createBrowserRouter([
     {
@@ -33,8 +34,8 @@ export const router = createBrowserRouter([
             { index: true, element: <Home /> },
             { path: 'signin', element: <SignIn /> },
             { path: 'signUp', element: <SignUp /> },
-            { path: 'allScholarship', element: <AllScholarship /> }
-            ,
+            { path: 'allScholarship', element: <AllScholarship /> },
+            { path: 'scholarshipdetails/:id', element: <ScholarshipDetails /> },
             { path: '/forbidden', Component: Forbidden }
         ]
     },

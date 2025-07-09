@@ -101,7 +101,7 @@ const AllScholarship = () => {
     }
 
     if (isError) {
-        return (
+  return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
                 <div className="text-center">
                     <p className="text-red-600 font-medium">Failed to load scholarships.</p>
