@@ -23,6 +23,7 @@ import PrivateRoute from "./PrivateRoute";
 import Forbidden from "../Pages/Forbidden";
 import AdminProtector from "./AdminProtector";
 import ModeratorProtector from "./ModeratorProtector";
+import AllScholarship from "../Pages/AllScholarship";
 
 export const router = createBrowserRouter([
     {
@@ -32,6 +33,8 @@ export const router = createBrowserRouter([
             { index: true, element: <Home /> },
             { path: 'signin', element: <SignIn /> },
             { path: 'signUp', element: <SignUp /> },
+            { path: 'allScholarship', element: <AllScholarship /> }
+            ,
             { path: '/forbidden', Component: Forbidden }
         ]
     },

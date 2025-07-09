@@ -32,7 +32,7 @@ const Navbar = () => {
           </div>
           <div>
             <Link
-              to="/all-scholarship"
+              to="/allScholarship"
               className="block text-black hover:text-blue-600 font-medium"
               onClick={() => setMenuOpen(false)}
             >

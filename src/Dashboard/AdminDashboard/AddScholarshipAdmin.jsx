@@ -23,15 +23,17 @@ const AddScholarshipAdmin = () => {
       return;
     }
     const formData = new FormData();
-    formData.append('image', imgFile);
+    formData.append('file', imgFile);
+    formData.append('upload_preset', 'dsmr88eqz'); // Replace with your preset name
+
     try {
-      const api_key = import.meta.env.VITE_IBB_API_KEY;
       const res = await axios.post(
-        `https://api.imgbb.com/1/upload?key=${api_key}`,
-        formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
+        'https://api.cloudinary.com/v1_1/dsmr88eqz/image/upload', // Replace with your cloud name
+        formData
       );
-      setImageUrl(res.data.data.display_url);
+      console.log(res.data.secure_url);
+      
+      setImageUrl(res.data.secure_url);
     } catch (err) {
       setImgError('Image upload failed. Try again.');
     } finally {
@@ -61,9 +63,10 @@ const AddScholarshipAdmin = () => {
       applicationDeadline: data.applicationDeadline,
       scholarshipPostDate: data.scholarshipPostDate,
       postedUserEmail: user?.email || '',
+      createdAt: new Date().toISOString(),
     };
     try {
-      const res = await axiosSecure.post('/scholarships', scholarshipData);
+      const res = await axiosSecure.post('/scholarship', scholarshipData);
       console.log(res);
       
       // reset();

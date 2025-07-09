@@ -2,6 +2,7 @@ import React from 'react'
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay, Pagination } from 'swiper/modules';
+import TopScholarship from '../Pages/TopScholarship';
 const Home = () => {
   return (
     <div className="w-full">
@@ -25,6 +26,8 @@ const Home = () => {
           <img className='w-full' src="https://images.unsplash.com/photo-1579626747178-6b17360cbf44?q=80&w=1329&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" />
         </SwiperSlide>
       </Swiper>
+      {/* this is for top 6 scholarship  */}
+      <TopScholarship />
     </div>
   )
 }
