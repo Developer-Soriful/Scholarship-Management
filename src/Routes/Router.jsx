@@ -26,6 +26,7 @@ import ModeratorProtector from "./ModeratorProtector";
 import AllScholarship from "../Pages/AllScholarship";
 import ScholarshipDetails from "../Pages/ScholarshipDetails";
 import Payment from "../Pages/Payment";
+import AllReviews from "../Dashboard/ModeratorDashboard/AllReviews";
 
 export const router = createBrowserRouter([
     {
@@ -56,6 +57,7 @@ export const router = createBrowserRouter([
         children: [
             { index: true, element: <AllAppliedScholarship /> },
             { path: 'addscholarship', element: <AddScholarship /> },
+            { path: 'allReviews', element: <AllReviews /> },
             { path: 'managescholarship', element: <ManageScholarship /> },
             { path: 'moderatorprofile', element: <ModeratorProfile /> },
         ]

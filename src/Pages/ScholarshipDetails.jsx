@@ -434,7 +434,7 @@ const ScholarshipDetails = () => {
                                         <div className="bg-gray-50 rounded-2xl p-6 h-full">
                                             <div className="flex items-center gap-4 mb-4">
                                                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                                                    <img src={review.reviewerPhotoURL} alt="" />
+                                                    <img className='w-full h-full rounded-full' src={review.reviewerPhotoURL} alt="" />
                                                 </div>
                                                 <div>
                                                     <div className="font-semibold text-gray-900">{review.reviewerName || 'Anonymous'}</div>

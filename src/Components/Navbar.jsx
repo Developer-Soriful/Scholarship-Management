@@ -86,9 +86,25 @@ const Navbar = () => {
             </div>
           }
           {
-            user &&
+            user && role === 'user' &&
             <div >
               <Link to="/userDashboard/myProfile" className='w-[45px] h-[45px] flex justify-center items-center'>
+                <img className='w-full h-full rounded-full' src={user.photoURL} alt="" />
+              </Link>
+            </div>
+          }
+          {
+            user && role === 'moderator' &&
+            <div >
+              <Link to="/moderatorDashboard/moderatorprofile" className='w-[45px] h-[45px] flex justify-center items-center'>
+                <img className='w-full h-full rounded-full' src={user.photoURL} alt="" />
+              </Link>
+            </div>
+          }
+          {
+            user && role === 'admin' &&
+            <div >
+              <Link to="/admindashboard/adminprofile" className='w-[45px] h-[45px] flex justify-center items-center'>
                 <img className='w-full h-full rounded-full' src={user.photoURL} alt="" />
               </Link>
             </div>

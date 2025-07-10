@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router';
+import Footer from '../../Components/Footer';
 
 const menuItems = [
     { name: 'Home', path: '/' },
     { name: 'My Profile', path: 'moderatorprofile' },
     { name: 'Manage Scholarship', path: 'manageScholarship' },
+    { name: 'All Reviews', path: 'allReviews' },
     { name: 'Add Scholarship', path: 'addScholarship' },
 ];
 
@@ -12,7 +14,7 @@ const ModeratorDashboard = () => {
     const [open, setOpen] = useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className=" bg-gray-50 flex flex-col w-11/12 mx-auto ">
             {/* Header */}
             <header className="flex items-center justify-between px-6 py-4 bg-white shadow-md">
                 <h1 className="text-2xl font-bold text-purple-700">Moderator Dashboard</h1>
@@ -26,7 +28,7 @@ const ModeratorDashboard = () => {
             </header>
 
             {/* Main Content */}
-            <main className="flex-1">
+            <main className="flex justify-center items-center" style={{ minHeight: 'calc(100vh - 184.99px)' }}>
                 <Outlet />
             </main>
 
@@ -37,7 +39,7 @@ const ModeratorDashboard = () => {
             >
                 {/* Overlay */}
                 <div
-                    className={`absolute inset-0 bg-black bg-opacity-30 transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0'}`}
+                    className={`absolute inset-0 backdrop-blur-2xl bg-black/20 bg-opacity-30 transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0'}`}
                     onClick={() => setOpen(false)}
                 />
                 {/* Drawer */}
@@ -71,6 +73,7 @@ const ModeratorDashboard = () => {
                     </ul>
                 </nav>
             </div>
+            <Footer />
         </div>
     );
 };
