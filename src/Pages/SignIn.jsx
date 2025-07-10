@@ -31,6 +31,28 @@ const SignIn = () => {
   }
 
   const [showPassword, setShowPassword] = useState(false);
+  const [googleError, setGoogleError] = useState("");
+  const { googleLogin } = useAuth();
+
+  const handleGoogleSignIn = async () => {
+    setGoogleError("");
+    try {
+      const result = await googleLogin();
+      const user = result.user;
+      // Prepare user data for backend
+      const userData = {
+        userName: user.displayName,
+        email: user.email,
+        role: "user",
+        created_at: new Date(),
+        last_login: new Date().toISOString(),
+      };
+      await axiosSecure.post("/users", userData);
+      navigate("/");
+    } catch (err) {
+      setGoogleError("Google sign in failed. Please try again.");
+    }
+  };
   return (
     <div className=" flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 md:p-10">
@@ -74,6 +96,17 @@ const SignIn = () => {
             Sign In
           </button>
         </form>
+        <div className="my-6 flex flex-col items-center gap-2">
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-lg py-2 font-semibold text-gray-700 shadow hover:bg-blue-50 transition"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 48 48"><g><path fill="#4285F4" d="M24 9.5c3.54 0 6.7 1.22 9.19 3.23l6.85-6.85C36.68 2.36 30.74 0 24 0 14.82 0 6.71 5.48 2.69 13.44l7.98 6.2C12.36 13.13 17.74 9.5 24 9.5z"/><path fill="#34A853" d="M46.1 24.55c0-1.64-.15-3.22-.42-4.74H24v9.01h12.42c-.54 2.9-2.18 5.36-4.65 7.01l7.19 5.6C43.98 37.13 46.1 31.3 46.1 24.55z"/><path fill="#FBBC05" d="M10.67 28.09a14.5 14.5 0 010-8.18l-7.98-6.2A23.97 23.97 0 000 24c0 3.77.9 7.34 2.69 10.29l7.98-6.2z"/><path fill="#EA4335" d="M24 48c6.48 0 11.93-2.15 15.9-5.85l-7.19-5.6c-2.01 1.35-4.6 2.15-8.71 2.15-6.26 0-11.64-3.63-13.33-8.89l-7.98 6.2C6.71 42.52 14.82 48 24 48z"/></g></svg>
+            Continue with Google
+          </button>
+          {googleError && <span className="text-red-500 text-xs">{googleError}</span>}
+        </div>
         <div className="mt-6 text-center">
           <span className="text-gray-600">Don&apos;t have an account? </span>
           <Link to="/signUp" className="text-blue-600 hover:underline font-semibold">Sign Up</Link>

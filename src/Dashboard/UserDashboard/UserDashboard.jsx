@@ -6,8 +6,8 @@ import LoadingSpinner from '../../Components/LoadingSpinner';
 
 const menuItems = [
     { name: 'Home', path: '/' },
-    { name: 'My Profile', path: '', exact: true },
-    { name: 'My Application', path: 'myApplication' },
+    { name: 'My Application', path: '', exact: true },
+    { name: 'My Profile', path: 'myProfile', },
     { name: 'My Review', path: 'myReview' },
 ];
 

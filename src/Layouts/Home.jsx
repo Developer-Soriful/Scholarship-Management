@@ -34,7 +34,7 @@ const Home = () => {
       {/* this is for all scholarship button regrating  */}
       <div>
 
-        <Link to="/allScholarships" >
+        <Link to="/allScholarship" >
           <button className="inline-flex items-center mb-10 gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 text-white font-bold text-lg rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 group">
             <span>View All Scholarships</span>
             <FaArrowRight className="group-hover:translate-x-1 transition-transform duration-300" />

@@ -25,6 +25,7 @@ import AdminProtector from "./AdminProtector";
 import ModeratorProtector from "./ModeratorProtector";
 import AllScholarship from "../Pages/AllScholarship";
 import ScholarshipDetails from "../Pages/ScholarshipDetails";
+import Payment from "../Pages/Payment";
 
 export const router = createBrowserRouter([
     {
@@ -35,7 +36,8 @@ export const router = createBrowserRouter([
             { path: 'signin', element: <SignIn /> },
             { path: 'signUp', element: <SignUp /> },
             { path: 'allScholarship', element: <AllScholarship /> },
-            { path: 'scholarshipdetails/:id', element: <ScholarshipDetails /> },
+            { path: 'scholarshipdetails/:id', element: <PrivateRoute><ScholarshipDetails /></PrivateRoute> },
+            { path: 'payment/:id', element: <PrivateRoute><Payment /></PrivateRoute> },
             { path: '/forbidden', Component: Forbidden }
         ]
     },
@@ -43,8 +45,8 @@ export const router = createBrowserRouter([
         path: '/userDashboard',
         element: <PrivateRoute><UserDashboard /></PrivateRoute>, // Protect all dashboard routes
         children: [
-            { index: true, element: <PrivateRoute> <MyProfile /></PrivateRoute> },
-            { path: 'myApplication', element: <PrivateRoute> <MyApplication /></PrivateRoute> },
+            { index: true, element: <PrivateRoute><MyApplication /> </PrivateRoute> },
+            { path: 'myProfile', element: <PrivateRoute><MyProfile /> </PrivateRoute> },
             { path: 'myReview', element: <PrivateRoute> <MyReview /></PrivateRoute> }
         ]
     },

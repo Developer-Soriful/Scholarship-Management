@@ -2,6 +2,7 @@
 import { Link } from 'react-router';
 import useAuth from '../Auth/useAuth';
 import useUserRole from '../Auth/useUserRole';
+import { FaUser } from 'react-icons/fa';
 
 const Navbar = () => {
   const { user } = useAuth()
@@ -20,7 +21,7 @@ const Navbar = () => {
       </div >
       {/* desktop menu  */}
       <div>
-        <div className='flex gap-5'>
+        <div className='flex justify-center items-center gap-5'>
           <div>
             <Link
               to="/"
@@ -81,6 +82,14 @@ const Navbar = () => {
             <div>
               <Link to={`/signin`}>
                 Login
+              </Link>
+            </div>
+          }
+          {
+            user &&
+            <div >
+              <Link to="/userDashboard/myProfile" className='w-[45px] h-[45px] flex justify-center items-center'>
+                <img className='w-full h-full rounded-full' src={user.photoURL} alt="" />
               </Link>
             </div>
           }

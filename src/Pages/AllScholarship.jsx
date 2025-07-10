@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axiosSecure from '../Axios/axiosSecure';
-import { FaStar, FaMapMarkerAlt, FaCalendarAlt, FaDollarSign, FaEye, FaSearch, FaFilter, FaSort, FaHeart, FaShare, FaBookmark, FaUsers, FaGlobe, FaUniversity } from 'react-icons/fa';
+import { FaStar, FaMapMarkerAlt, FaCalendarAlt, FaDollarSign, FaEye, FaSearch, FaFilter, FaSort, FaHeart, FaShare, FaBookmark, FaUsers, FaGlobe, FaUniversity, FaAward, FaClock } from 'react-icons/fa';
 import { MdSchool, MdTrendingUp, MdVerified, MdLocationOn, MdAccessTime } from 'react-icons/md';
 import { Link } from 'react-router';
 
@@ -57,8 +57,10 @@ const AllScholarship = () => {
     // Filter and sort scholarships
     const filteredAndSortedScholarships = useMemo(() => {
         let filtered = scholarships.filter(scholarship => {
-            const matchesSearch = scholarship.universityName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                scholarship.scholarshipName.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesSearch = scholarship.scholarshipName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                scholarship.universityName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                scholarship.subjectCategory?.toLowerCase().includes(searchTerm.toLowerCase());
+
             const matchesCategory = selectedCategory === 'all' || scholarship.scholarshipCategory === selectedCategory;
             const matchesSubject = selectedSubject === 'all' || scholarship.subjectCategory === selectedSubject;
 
@@ -68,19 +70,26 @@ const AllScholarship = () => {
         // Sort scholarships
         switch (sortBy) {
             case 'newest':
-                filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                filtered.sort((a, b) => new Date(b.scholarshipPostDate) - new Date(a.scholarshipPostDate));
                 break;
             case 'oldest':
-                filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-                break;
-            case 'rating':
-                filtered.sort((a, b) => calculateAverageRating(b.ratings) - calculateAverageRating(a.ratings));
+                filtered.sort((a, b) => new Date(a.scholarshipPostDate) - new Date(b.scholarshipPostDate));
                 break;
             case 'deadline':
                 filtered.sort((a, b) => new Date(a.applicationDeadline) - new Date(b.applicationDeadline));
                 break;
-            case 'fees':
+            case 'rating':
+                filtered.sort((a, b) => {
+                    const ratingA = calculateAverageRating(a.ratings || []);
+                    const ratingB = calculateAverageRating(b.ratings || []);
+                    return ratingB - ratingA;
+                });
+                break;
+            case 'fee-low':
                 filtered.sort((a, b) => a.applicationFees - b.applicationFees);
+                break;
+            case 'fee-high':
+                filtered.sort((a, b) => b.applicationFees - a.applicationFees);
                 break;
             default:
                 break;
@@ -94,14 +103,14 @@ const AllScholarship = () => {
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent mx-auto"></div>
-                    <p className="mt-6 text-gray-600 font-medium">Loading scholarships...</p>
+                    <p className="mt-6 text-gray-600 font-medium">Loading all scholarships...</p>
                 </div>
             </div>
         );
     }
 
     if (isError) {
-  return (
+        return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
                 <div className="text-center">
                     <p className="text-red-600 font-medium">Failed to load scholarships.</p>
@@ -111,129 +120,133 @@ const AllScholarship = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 w-full">
-            {/* Hero Section */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 py-24">
-                {/* Background Pattern */}
-                <div className="absolute inset-0 bg-black/10"></div>
-                <div className="absolute inset-0" style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                }}></div>
-
-                <div className="relative max-w-7xl mx-auto px-4 text-center">
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-full mb-8 border border-white/20">
-                        <FaUniversity className="text-white text-3xl" />
+        <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen py-20 w-full">
+            <div className=" mx-auto px-4">
+                {/* Hero Section */}
+                <div className="text-center mb-16">
+                    <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-full mb-8 shadow-2xl">
+                        <FaGlobe className="text-white text-4xl" />
                     </div>
-                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-                        Discover Your Future
+                    <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-6">
+                        All Scholarships
                     </h1>
-                    <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto mb-8 leading-relaxed">
-                        Explore thousands of scholarship opportunities from world-class universities and institutions
+                    <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                        Explore thousands of scholarship opportunities from world-class universities and institutions worldwide.
+                        Find the perfect match for your academic journey and career goals.
                     </p>
+                </div>
 
-                    {/* Stats */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                            <div className="text-3xl font-bold text-white mb-2">{scholarships.length}+</div>
-                            <div className="text-white/80 text-sm">Available Scholarships</div>
+                {/* Stats Section */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center shadow-xl border border-white/20">
+                        <div className="text-3xl font-bold text-blue-600 mb-2">{scholarships.length}</div>
+                        <div className="text-sm text-gray-600 font-semibold">Total Scholarships</div>
+                    </div>
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center shadow-xl border border-white/20">
+                        <div className="text-3xl font-bold text-green-600 mb-2">
+                            {scholarships.filter(s => s.scholarshipCategory === 'Full fund').length}
                         </div>
-                        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                            <div className="text-3xl font-bold text-white mb-2">{scholarships.filter(s => s.scholarshipCategory === 'Full fund').length}</div>
-                            <div className="text-white/80 text-sm">Full Funded</div>
+                        <div className="text-sm text-gray-600 font-semibold">Full Fund</div>
+                    </div>
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center shadow-xl border border-white/20">
+                        <div className="text-3xl font-bold text-amber-600 mb-2">
+                            {scholarships.filter(s => s.scholarshipCategory === 'Partial').length}
                         </div>
-                        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                            <div className="text-3xl font-bold text-white mb-2">50+</div>
-                            <div className="text-white/80 text-sm">Countries</div>
+                        <div className="text-sm text-gray-600 font-semibold">Partial Fund</div>
+                    </div>
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center shadow-xl border border-white/20">
+                        <div className="text-3xl font-bold text-purple-600 mb-2">
+                            {scholarships.filter(s => s.scholarshipCategory === 'Self-fund').length}
                         </div>
+                        <div className="text-sm text-gray-600 font-semibold">Self Fund</div>
                     </div>
                 </div>
-            </div>
 
-            <div className="max-w-7xl mx-auto px-4 py-12">
-                {/* Search and Filter Bar */}
-                <div className="bg-white rounded-3xl shadow-2xl p-8 mb-12 border border-gray-100">
+                {/* Search and Filter Section */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 mb-12 border border-white/20">
                     <div className="flex flex-col lg:flex-row gap-6 items-center">
-                        {/* Search Input */}
+                        {/* Search Bar */}
                         <div className="flex-1 relative">
-                            <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
+                            <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                             <input
                                 type="text"
-                                placeholder="Search by university name, scholarship type, or location..."
+                                placeholder="Search scholarships, universities, or subjects..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                                className="w-full pl-12 pr-4 py-4 bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
                         </div>
 
-                        {/* Filter Buttons */}
-                        <div className="flex gap-4">
-                            <button
-                                onClick={() => setShowFilters(!showFilters)}
-                                className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-                            >
-                                <FaFilter className="text-lg" />
-                                Advanced Filters
-                            </button>
-                            <select
-                                value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
-                                className="px-8 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold text-lg shadow-lg"
-                            >
-                                <option value="newest">Newest First</option>
-                                <option value="oldest">Oldest First</option>
-                                <option value="rating">Highest Rated</option>
-                                <option value="deadline">Deadline Soon</option>
-                                <option value="fees">Lowest Fees</option>
-                            </select>
-                        </div>
+                        {/* Filter Toggle */}
+                        <button
+                            onClick={() => setShowFilters(!showFilters)}
+                            className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-2xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+                        >
+                            <FaFilter />
+                            Filters
+                        </button>
+
+                        {/* Sort Dropdown */}
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className="px-6 py-4 bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="deadline">Deadline</option>
+                            <option value="rating">Highest Rated</option>
+                            <option value="fee-low">Lowest Fee</option>
+                            <option value="fee-high">Highest Fee</option>
+                        </select>
                     </div>
 
                     {/* Advanced Filters */}
                     {showFilters && (
-                        <div className="mt-8 pt-8 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-lg font-semibold text-gray-700 mb-3">Scholarship Category</label>
-                                <select
-                                    value={selectedCategory}
-                                    onChange={(e) => setSelectedCategory(e.target.value)}
-                                    className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-                                >
-                                    <option value="all">All Categories</option>
-                                    <option value="Full fund">Full Fund</option>
-                                    <option value="Partial">Partial</option>
-                                    <option value="Self-fund">Self Fund</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-lg font-semibold text-gray-700 mb-3">Subject Category</label>
-                                <select
-                                    value={selectedSubject}
-                                    onChange={(e) => setSelectedSubject(e.target.value)}
-                                    className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-                                >
-                                    <option value="all">All Subjects</option>
-                                    <option value="Engineering">Engineering</option>
-                                    <option value="Agriculture">Agriculture</option>
-                                    <option value="Doctor">Doctor</option>
-                                </select>
+                        <div className="mt-8 pt-8 border-t border-gray-200">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-3">Scholarship Category</label>
+                                    <select
+                                        value={selectedCategory}
+                                        onChange={(e) => setSelectedCategory(e.target.value)}
+                                        className="w-full px-4 py-3 bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    >
+                                        <option value="all">All Categories</option>
+                                        <option value="Full fund">Full Fund</option>
+                                        <option value="Partial">Partial</option>
+                                        <option value="Self-fund">Self Fund</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-3">Subject Category</label>
+                                    <select
+                                        value={selectedSubject}
+                                        onChange={(e) => setSelectedSubject(e.target.value)}
+                                        className="w-full px-4 py-3 bg-white/50 backdrop-blur-sm border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    >
+                                        <option value="all">All Subjects</option>
+                                        <option value="Engineering">Engineering</option>
+                                        <option value="Agriculture">Agriculture</option>
+                                        <option value="Doctor">Doctor</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     )}
                 </div>
 
-                {/* Results Stats */}
-                <div className="flex flex-col md:flex-row justify-between items-center mb-10">
-                    <div className="text-gray-700 text-lg mb-4 md:mb-0">
-                        Showing <span className="font-bold text-blue-600 text-xl">{filteredAndSortedScholarships.length}</span> of{' '}
-                        <span className="font-bold text-xl">{scholarships.length}</span> scholarships
+                {/* Results Count */}
+                <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                        <FaUsers className="text-blue-600 text-xl" />
+                        <span className="text-lg font-semibold text-gray-700">
+                            {filteredAndSortedScholarships.length} scholarships found
+                        </span>
                     </div>
-                    <div className="flex gap-4">
-                        <span className="px-6 py-3 bg-green-100 text-green-800 rounded-full text-lg font-semibold shadow-lg">
-                            Full Fund: {scholarships.filter(s => s.scholarshipCategory === 'Full fund').length}
-                        </span>
-                        <span className="px-6 py-3 bg-yellow-100 text-yellow-800 rounded-full text-lg font-semibold shadow-lg">
-                            Partial: {scholarships.filter(s => s.scholarshipCategory === 'Partial').length}
-                        </span>
+                    <div className="flex items-center gap-2">
+                        <MdTrendingUp className="text-green-600" />
+                        <span className="text-sm text-gray-600">Updated daily</span>
                     </div>
                 </div>
 
@@ -261,7 +274,7 @@ const AllScholarship = () => {
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
 
                                     {/* Rating Badge */}
-                                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md rounded-2xl px-4 py-2 flex items-center space-x-2 shadow-xl border border-white/20">
+                                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md rounded-2xl px-4 py-2 flex items-center space-x-2 shadow-lg border border-white/20">
                                         <FaStar className="text-yellow-500 text-lg" />
                                         <span className="font-bold text-gray-800 text-lg">
                                             {calculateAverageRating(scholarship.ratings || [])}
@@ -275,7 +288,7 @@ const AllScholarship = () => {
                                         </span>
                                     </div>
 
-                                    {/* Action Buttons */}
+                                    {/* Action Buttons on Hover */}
                                     <div className="absolute top-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex space-x-3">
                                         <button className="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center shadow-xl hover:bg-white transition-colors">
                                             <FaHeart className="text-red-500 text-lg" />
@@ -315,6 +328,19 @@ const AllScholarship = () => {
                                         </span>
                                     </div>
 
+                                    {/* Post Date */}
+                                    <div className="flex items-center text-gray-600 mb-4">
+                                        <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                            <FaClock className="text-purple-500" />
+                                        </div>
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Posted</div>
+                                            <div className="text-sm font-bold">
+                                                {new Date(scholarship.scholarshipPostDate).toLocaleDateString()}
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     {/* Application Deadline */}
                                     <div className="flex items-center text-gray-600 mb-4">
                                         <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
@@ -329,7 +355,7 @@ const AllScholarship = () => {
                                     </div>
 
                                     {/* Application Fees */}
-                                    <div className="flex items-center text-gray-600 mb-8">
+                                    <div className="flex items-center text-gray-600 mb-6">
                                         <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
                                             <FaDollarSign className="text-green-500" />
                                         </div>
@@ -339,14 +365,16 @@ const AllScholarship = () => {
                                         </div>
                                     </div>
 
-                                    {/* Action Button */}
-                                    <Link>
-                                        <button className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-3 group/btn shadow-lg hover:shadow-xl transform hover:scale-105">
-                                            <FaEye className="group-hover/btn:scale-110 transition-transform duration-300" />
-                                            <span>View Details</span>
-                                        </button>
-                                    </Link>
-
+                                    {/* Action Buttons */}
+                                    <div className="space-y-3">
+                                        {/* View Details Button */}
+                                        <Link to={`/scholarshipdetails/${scholarship._id}`}>
+                                            <button className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-2 group/btn shadow-lg hover:shadow-xl transform hover:scale-105">
+                                                <FaEye className="group-hover/btn:scale-110 transition-transform duration-300" />
+                                                <span>View Details</span>
+                                            </button>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -368,9 +396,9 @@ const AllScholarship = () => {
             </div>
 
             {/* Floating Action Button */}
-            <div className="fixed bottom-8 right-8">
+            <div className="fixed bottom-8 right-8 z-50">
                 <button className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center">
-                    <MdTrendingUp className="text-2xl" />
+                    <FaFilter className="text-2xl" />
                 </button>
             </div>
         </div>

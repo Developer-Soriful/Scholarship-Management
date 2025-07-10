@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axiosSecure from '../Axios/axiosSecure';
-import { FaStar, FaMapMarkerAlt, FaCalendarAlt, FaGraduationCap, FaDollarSign, FaEye, FaUniversity } from 'react-icons/fa';
+import { FaStar, FaMapMarkerAlt, FaCalendarAlt, FaGraduationCap, FaDollarSign, FaEye, FaUniversity, FaAward, FaClock } from 'react-icons/fa';
 import { MdSchool } from 'react-icons/md';
 import { Link } from 'react-router';
 
@@ -38,13 +38,13 @@ const TopScholarship = () => {
     const getSubjectBadgeColor = (subject) => {
         switch (subject) {
             case 'Engineering':
-                return 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md';
+                return 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white';
             case 'Agriculture':
-                return 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md';
+                return 'bg-gradient-to-r from-green-500 to-emerald-500 text-white';
             case 'Doctor':
-                return 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-md';
+                return 'bg-gradient-to-r from-purple-500 to-violet-500 text-white';
             default:
-                return 'bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-md';
+                return 'bg-gradient-to-r from-gray-400 to-gray-500 text-white';
         }
     };
 
@@ -70,48 +70,24 @@ const TopScholarship = () => {
     }
 
     return (
-        <div className=" bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-16 px-4">
-            <div className="max-w-7xl mx-auto">
-                {/* Header Section */}
+        <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-20">
+            <div className="max-w-7xl mx-auto px-4">
+                {/* Hero Section */}
                 <div className="text-center mb-16">
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-6 shadow-lg">
+                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-8 shadow-lg">
                         <FaUniversity className="text-white text-3xl" />
                     </div>
-                    <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-6">
+                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
                         Top Scholarships
-                    </h1>
+                    </h2>
                     <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                        Discover the best scholarship opportunities from world-class universities around the globe
+                        Discover the most prestigious scholarship opportunities from world-class universities.
+                        These top-rated scholarships offer exceptional academic and financial benefits.
                     </p>
                 </div>
 
-                {/* Filters and Stats */}
-                <div className="flex flex-col md:flex-row justify-between items-center mb-12 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/20">
-                    <div className="flex items-center space-x-6 mb-6 md:mb-0">
-                        <div className="text-center">
-                            <div className="text-3xl font-bold text-blue-600">{scholarships.length}</div>
-                            <div className="text-sm text-gray-600">Total Scholarships</div>
-                        </div>
-                        <div className="h-12 w-px bg-gray-300"></div>
-                        <div className="text-center">
-                            <div className="text-3xl font-bold text-green-600">
-                                {scholarships.filter(s => s.scholarshipCategory === 'Full fund').length}
-                            </div>
-                            <div className="text-sm text-gray-600">Full Fund</div>
-                        </div>
-                    </div>
-                    <div className="flex space-x-3">
-                        <span className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full text-sm font-semibold shadow-lg">
-                            Full Fund: {scholarships.filter(s => s.scholarshipCategory === 'Full fund').length}
-                        </span>
-                        <span className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-full text-sm font-semibold shadow-lg">
-                            Partial: {scholarships.filter(s => s.scholarshipCategory === 'Partial').length}
-                        </span>
-                    </div>
-                </div>
-
                 {/* Scholarship Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {scholarships.map((scholarship, index) => (
                         <div key={scholarship._id || index} className="group relative">
                             {/* Card Container */}
@@ -176,6 +152,19 @@ const TopScholarship = () => {
                                         </span>
                                     </div>
 
+                                    {/* Post Date */}
+                                    <div className="flex items-center text-gray-600 mb-4">
+                                        <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                            <FaClock className="text-purple-500" />
+                                        </div>
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase tracking-wide">Posted</div>
+                                            <div className="text-sm font-semibold">
+                                                {scholarship.scholarshipPostDate}
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     {/* Application Deadline */}
                                     <div className="flex items-center text-gray-600 mb-4">
                                         <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
@@ -190,7 +179,7 @@ const TopScholarship = () => {
                                     </div>
 
                                     {/* Application Fees */}
-                                    <div className="flex items-center text-gray-600 mb-8">
+                                    <div className="flex items-center text-gray-600 mb-6">
                                         <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
                                             <FaDollarSign className="text-green-500" />
                                         </div>
@@ -200,13 +189,17 @@ const TopScholarship = () => {
                                         </div>
                                     </div>
 
-                                    {/* Action Button */}
-                                    <Link to={`/scholarshipdetails/${scholarship._id}`}>
-                                        <button className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-3 group/btn shadow-lg hover:shadow-xl transform hover:scale-105">
-                                            <FaEye className="group-hover/btn:scale-110 transition-transform duration-300" />
-                                            <span>View Details</span>
-                                        </button>
-                                    </Link>
+                                    {/* Action Buttons */}
+                                    <div className="space-y-3">
+
+                                        {/* View Details Button */}
+                                        <Link to={`/scholarshipdetails/${scholarship._id}`}>
+                                            <button className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-2 group/btn shadow-lg hover:shadow-xl transform hover:scale-105">
+                                                <FaEye className="group-hover/btn:scale-110 transition-transform duration-300" />
+                                                <span>View Details</span>
+                                            </button>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
