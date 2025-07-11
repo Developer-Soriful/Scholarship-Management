@@ -233,7 +233,7 @@ const AdminProfile = () => {
                     Manage Reviews
                   </button>
                   <button 
-                    onClick={() => navigate('/admindashboard/manageappliedapplication')}
+                    onClick={() => navigate('/admindashboard')}
                     className="bg-gradient-to-r from-teal-500 to-emerald-500 text-white text-xs font-semibold py-2 px-2 rounded-lg hover:from-teal-600 hover:to-emerald-600 transition-all duration-200"
                   >
                     View Applications

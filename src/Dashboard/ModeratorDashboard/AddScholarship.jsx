@@ -5,6 +5,7 @@ import axiosSecure from '../../Axios/axiosSecure';
 import useAuth from '../../Auth/useAuth';
 import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss';
+import { useNavigate } from 'react-router';
 
 const AddScholarship = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -12,7 +13,7 @@ const AddScholarship = () => {
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const [imgError, setImgError] = useState('');
-
+  const navigate = useNavigate()
   const handleImageUpload = async (e) => {
     setImgError('');
     setUploading(true);
@@ -67,7 +68,9 @@ const AddScholarship = () => {
     };
     try {
       const res = await axiosSecure.post('/scholarship', scholarshipData);
-      console.log(res);
+      if (res) {
+        navigate('/moderatorDashboard/manageScholarship')
+      }
 
       // reset();
       setImageUrl('');
@@ -86,49 +89,49 @@ const AddScholarship = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-[75vh] w-full bg-gradient-to-br from-emerald-50 to-emerald-100 p-2 sm:p-4">
+    <div className="flex items-center justify-center h-[75vh] w-full bg-gradient-to-br from-purple-100 via-indigo-50 to-violet-100 p-2 sm:p-4">
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl p-4 sm:p-6 md:p-8 h-full overflow-y-auto">
-        <div className="sticky top-0 bg-white pb-4 border-b border-gray-200">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-emerald-700 mb-1 text-center">Add Scholarship</h1>
+        <div className="sticky top-0 bg-white pb-4 border-b border-purple-200">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-purple-700 mb-1 text-center">Add Scholarship</h1>
           <p className="text-gray-500 text-center text-sm sm:text-base">Fill in the details to add a new scholarship.</p>
         </div>
         <form className="space-y-3 sm:space-y-4 mt-4" onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Scholarship Name</label>
-              <input type="text" {...register('scholarshipName', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Scholarship Name" />
+              <input type="text" {...register('scholarshipName', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Scholarship Name" />
               {errors.scholarshipName && <span className="text-red-500 text-xs">{errors.scholarshipName.message}</span>}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">University Name</label>
-              <input type="text" {...register('universityName', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="University Name" />
+              <input type="text" {...register('universityName', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="University Name" />
               {errors.universityName && <span className="text-red-500 text-xs">{errors.universityName.message}</span>}
             </div>
             <div className="sm:col-span-2">
               <label className="block text-sm font-semibold text-gray-700 mb-1">University Image/Logo</label>
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" />
-              {uploading && <span className="text-emerald-500 text-xs">Uploading...</span>}
+              <input type="file" accept="image/*" onChange={handleImageUpload} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100" />
+              {uploading && <span className="text-purple-500 text-xs">Uploading...</span>}
               {imageUrl && <span className="block text-green-600 text-xs mt-1">Image uploaded!</span>}
               {imgError && <span className="text-red-500 text-xs">{imgError}</span>}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">University Country</label>
-              <input type="text" {...register('universityCountry', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Country" />
+              <input type="text" {...register('universityCountry', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Country" />
               {errors.universityCountry && <span className="text-red-500 text-xs">{errors.universityCountry.message}</span>}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">University City</label>
-              <input type="text" {...register('universityCity', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="City" />
+              <input type="text" {...register('universityCity', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="City" />
               {errors.universityCity && <span className="text-red-500 text-xs">{errors.universityCity.message}</span>}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">University World Rank</label>
-              <input type="number" {...register('universityWorldRank', { required: 'Required', min: 1 })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="World Rank" />
+              <input type="number" {...register('universityWorldRank', { required: 'Required', min: 1 })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="World Rank" />
               {errors.universityWorldRank && <span className="text-red-500 text-xs">{errors.universityWorldRank.message}</span>}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Subject Category</label>
-              <select {...register('subjectCategory', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400">
+              <select {...register('subjectCategory', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400">
                 <option value="">Select</option>
                 <option value="Agriculture">Agriculture</option>
                 <option value="Engineering">Engineering</option>
@@ -138,7 +141,7 @@ const AddScholarship = () => {
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Scholarship Category</label>
-              <select {...register('scholarshipCategory', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400">
+              <select {...register('scholarshipCategory', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400">
                 <option value="">Select</option>
                 <option value="Full fund">Full fund</option>
                 <option value="Partial">Partial</option>
@@ -148,7 +151,7 @@ const AddScholarship = () => {
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Degree</label>
-              <select {...register('degree', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400">
+              <select {...register('degree', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400">
                 <option value="">Select</option>
                 <option value="Diploma">Diploma</option>
                 <option value="Bachelor">Bachelor</option>
@@ -158,26 +161,26 @@ const AddScholarship = () => {
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Tuition Fees (optional)</label>
-              <input type="number" {...register('tuitionFees')} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Tuition Fees" />
+              <input type="number" {...register('tuitionFees')} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Tuition Fees" />
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Application Fees</label>
-              <input type="number" {...register('applicationFees', { required: 'Required', min: 0 })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Application Fees" />
+              <input type="number" {...register('applicationFees', { required: 'Required', min: 0 })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Application Fees" />
               {errors.applicationFees && <span className="text-red-500 text-xs">{errors.applicationFees.message}</span>}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Service Charge</label>
-              <input type="number" {...register('serviceCharge', { required: 'Required', min: 0 })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" placeholder="Service Charge" />
+              <input type="number" {...register('serviceCharge', { required: 'Required', min: 0 })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Service Charge" />
               {errors.serviceCharge && <span className="text-red-500 text-xs">{errors.serviceCharge.message}</span>}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Application Deadline</label>
-              <input type="date" {...register('applicationDeadline', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+              <input type="date" {...register('applicationDeadline', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" />
               {errors.applicationDeadline && <span className="text-red-500 text-xs">{errors.applicationDeadline.message}</span>}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Scholarship Post Date</label>
-              <input type="date" {...register('scholarshipPostDate', { required: 'Required' })} defaultValue={new Date().toISOString().split('T')[0]} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+              <input type="date" {...register('scholarshipPostDate', { required: 'Required' })} defaultValue={new Date().toISOString().split('T')[0]} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" />
               {errors.scholarshipPostDate && <span className="text-red-500 text-xs">{errors.scholarshipPostDate.message}</span>}
             </div>
             <div className="sm:col-span-2">
@@ -185,8 +188,8 @@ const AddScholarship = () => {
               <input type="email" value={user?.email || ''} disabled className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-100 text-gray-500" />
             </div>
           </div>
-          <div className="sticky bottom-0 bg-white pt-4 border-t border-gray-200">
-            <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg shadow transition text-sm sm:text-base">Add Scholarship</button>
+          <div className="sticky bottom-0 bg-white pt-4 border-t border-purple-200">
+            <button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg shadow transition text-sm sm:text-base">Add Scholarship</button>
           </div>
         </form>
       </div>

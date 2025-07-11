@@ -213,7 +213,7 @@ const ModeratorProfile = () => {
                 Manage Scholarships
               </button>
               <button 
-                onClick={() => navigate('/moderatorDashboard/allappliedscholarship')}
+                onClick={() => navigate('/moderatorDashboard')}
                 className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs font-semibold py-2 px-3 rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all duration-200"
               >
                 View Applications

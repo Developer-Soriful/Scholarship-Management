@@ -5,6 +5,7 @@ import axiosSecure from '../../Axios/axiosSecure';
 import useAuth from '../../Auth/useAuth';
 import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss';
+import { useNavigate } from 'react-router';
 
 const AddScholarshipAdmin = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -12,7 +13,7 @@ const AddScholarshipAdmin = () => {
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const [imgError, setImgError] = useState('');
-
+  const navigate = useNavigate()
   const handleImageUpload = async (e) => {
     setImgError('');
     setUploading(true);
@@ -67,9 +68,10 @@ const AddScholarshipAdmin = () => {
     };
     try {
       const res = await axiosSecure.post('/scholarship', scholarshipData);
-      console.log(res);
-      
-      // reset();
+      if(res){
+        navigate('/admindashboard/managescholarshipadmin')
+      }
+      reset();
       setImageUrl('');
       Swal.fire({
         toast: true,

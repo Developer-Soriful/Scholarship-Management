@@ -8,7 +8,7 @@ import MyApplication from "../Dashboard/UserDashboard/MyApplication";
 import MyProfile from "../Dashboard/UserDashboard/MyProfile";
 import MyReview from "../Dashboard/UserDashboard/MyReview";
 import ModeratorDashboard from "../Dashboard/ModeratorDashboard/ModeratorDashboard";
-import AllAppliedScholarship from "../Dashboard/ModeratorDashboard/AllAppliedScholarship";
+import AllAppliedScholarship from "../Dashboard/ModeratorDashboard/AllAppliedApplications";
 import AddScholarship from "../Dashboard/ModeratorDashboard/AddScholarship";
 import ManageScholarship from "../Dashboard/ModeratorDashboard/ManageScholarship";
 import ModeratorProfile from "../Dashboard/ModeratorDashboard/ModeratorProfile";
@@ -27,11 +27,15 @@ import AllScholarship from "../Pages/AllScholarship";
 import ScholarshipDetails from "../Pages/ScholarshipDetails";
 import Payment from "../Pages/Payment";
 import AllReviews from "../Dashboard/ModeratorDashboard/AllReviews";
+import AllAppliedApplications from "../Dashboard/ModeratorDashboard/AllAppliedApplications";
+import ErrorPage from "../Pages/ErrorPage";
 
 export const router = createBrowserRouter([
     {
         path: '/',
         element: <HomeLayout />,
+        errorElement: <ErrorPage />
+        ,
         children: [
             { index: true, element: <Home /> },
             { path: 'signin', element: <SignIn /> },
@@ -55,7 +59,7 @@ export const router = createBrowserRouter([
         path: '/moderatorDashboard',
         element: <ModeratorProtector><ModeratorDashboard /></ModeratorProtector>,  // Protect all dashboard routes
         children: [
-            { index: true, element: <AllAppliedScholarship /> },
+            { index: true, element: <AllAppliedApplications /> },
             { path: 'addscholarship', element: <AddScholarship /> },
             { path: 'allReviews', element: <AllReviews /> },
             { path: 'managescholarship', element: <ManageScholarship /> },

@@ -6,7 +6,7 @@ import { MdSchool } from 'react-icons/md';
 import { Link } from 'react-router';
 
 const fetchTopScholarships = async () => {
-    const res = await axiosSecure.get('/scholarship');
+    const res = await axiosSecure.get('/top-scholarships');
     return res.data;
 };
 
@@ -15,12 +15,13 @@ const TopScholarship = () => {
         queryKey: ['topScholarships'],
         queryFn: fetchTopScholarships,
     });
-
+    
     const calculateAverageRating = (ratings) => {
         if (!ratings || ratings.length === 0) return 0;
         const sum = ratings.reduce((acc, rating) => acc + rating.point, 0);
         return (sum / ratings.length).toFixed(1);
     };
+
 
     const getCategoryBadgeColor = (category) => {
         switch (category) {
@@ -88,7 +89,7 @@ const TopScholarship = () => {
 
                 {/* Scholarship Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {scholarships.map((scholarship, index) => (
+                    {scholarships.data.map((scholarship, index) => (
                         <div key={scholarship._id || index} className="group relative">
                             {/* Card Container */}
                             <div className="bg-white rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-white/20">
