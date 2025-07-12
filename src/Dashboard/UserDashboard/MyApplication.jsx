@@ -107,7 +107,7 @@ const MyApplication = () => {
   const reviewMutation = useMutation({
     mutationFn: async (reviewData) => {
       // Adjust endpoint as needed
-      return axiosSecure.put(`/MyScholarship/${user.email}`, reviewData);
+      return axiosSecure.put(`/MyScholarship/${reviewData.universityId}`, reviewData);
     },
     onSuccess: () => {
       setShowReviewModal(false);
@@ -241,7 +241,6 @@ const MyApplication = () => {
     });
   };
 
-  console.log(applications);
   
   if (isLoading) return <div className="text-center py-10">Loading...</div>;
 
