@@ -6,11 +6,12 @@ import Swal from 'sweetalert2';
 import { FaEye, FaComment, FaTimes, FaCheck, FaClock, FaSpinner } from 'react-icons/fa';
 
 const fetchAppliedScholarships = async () => {
-  const res = await axiosSecure.get('/applied-scholarship');
+  const res = await axiosSecure.get('/allApplied-scholarship');
   return res.data;
 };
 
 const updateApplicationStatus = async ({ id, status }) => {
+  
     // Only send status field, not other fields
     const res = await axiosSecure.patch(`/applied-scholarship/${id}`, { 
         status: status 
@@ -74,6 +75,8 @@ const ManageAppliedApplication = () => {
   };
 
   const handleCancel = async (applicationId) => {
+    console.log(applicationId);
+    
     const result = await Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to cancel this application?',

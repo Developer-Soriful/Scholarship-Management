@@ -119,13 +119,13 @@ const ManageReview = () => {
                         <div className="flex items-center">
                             <span className="text-2xl font-bold text-red-600 mr-2">
                                 {allRatings.length > 0
-                                    ? (allRatings.reduce((sum, rating) => sum + (parseInt(rating.rating) || 0), 0) / allRatings.length).toFixed(1)
+                                    ? (allRatings.reduce((sum, rating) => sum + (parseInt(rating.point) || 0), 0) / allRatings.length).toFixed(1)
                                     : '0.0'
                                 }
                             </span>
                             <div className="flex">
                                 {renderStars(Math.round(allRatings.length > 0
-                                    ? allRatings.reduce((sum, rating) => sum + (parseInt(rating.rating) || 0), 0) / allRatings.length
+                                    ? allRatings.reduce((sum, rating) => sum + (parseInt(rating.point) || 0), 0) / allRatings.length
                                     : 0
                                 ))}
                             </div>
