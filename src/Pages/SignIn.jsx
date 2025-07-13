@@ -3,11 +3,13 @@ import { Link, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import useAuth from '../Auth/useAuth';
 import axiosSecure from '../Axios/axiosSecure';
+import Swal from 'sweetalert2';
 
 const SignIn = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const { loginUser, user } = useAuth()
   const navigate = useNavigate()
+  const [loginError, setLoginError] = useState("");
 
   // Redirect to home if user is logged in
   useEffect(() => {
@@ -17,6 +19,7 @@ const SignIn = () => {
   }, [user, navigate]);
 
   const onSubmit = (data) => {
+    setLoginError("");
     loginUser(data.email, data.password)
       .then(async () => {
         const userData = {
@@ -24,9 +27,28 @@ const SignIn = () => {
           last_login: new Date().toISOString()
         }
         await axiosSecure.patch(`/users/login-update`, userData)
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Login successful!',
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+        });
       })
       .catch(err => {
-        console.log(err.message);
+        setLoginError(err.message || 'Login failed. Please try again.');
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Login failed!',
+          text: err.message || 'Please try again.',
+          showConfirmButton: false,
+          timer: 2500,
+          timerProgressBar: true,
+        });
       })
   }
 
@@ -54,7 +76,7 @@ const SignIn = () => {
     }
   };
   return (
-    <div className=" flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4">
+    <div className="w-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 md:p-10">
         <h1 className="text-3xl font-extrabold text-blue-700 mb-2 text-center">Sign In</h1>
         <p className="text-gray-500 text-center mb-6">Welcome back! Please enter your details.</p>
@@ -89,6 +111,7 @@ const SignIn = () => {
             </div>
             {errors.password && <span className="text-red-500 text-xs">{errors.password.message}</span>}
           </div>
+          {loginError && <div className="text-red-500 text-xs text-center font-semibold">{loginError}</div>}
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg shadow transition"

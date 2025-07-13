@@ -26,10 +26,37 @@ const ManageAppliedApplication = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [feedback, setFeedback] = useState('');
+  // Filtering and sorting state
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [sortBy, setSortBy] = useState('date-desc');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const { data: applications = [], isLoading } = useQuery({
     queryKey: ['applied-scholarships'],
     queryFn: fetchAppliedScholarships,
+  });
+
+  // Filtering and sorting logic
+  const filteredApplications = applications.filter(app => {
+    const matchesStatus = filterStatus === 'all' ? true : app.status === filterStatus;
+    const search = searchTerm.trim().toLowerCase();
+    const matchesSearch =
+      app.userName?.toLowerCase().includes(search) ||
+      app.userEmail?.toLowerCase().includes(search) ||
+      app.university?.toLowerCase().includes(search);
+    return matchesStatus && (search === '' || matchesSearch);
+  });
+  const sortedApplications = [...filteredApplications].sort((a, b) => {
+    if (sortBy === 'date-desc') {
+      return new Date(b.date) - new Date(a.date);
+    } else if (sortBy === 'date-asc') {
+      return new Date(a.date) - new Date(b.date);
+    } else if (sortBy === 'deadline-desc') {
+      return new Date(b.scholarshipDeadline) - new Date(a.scholarshipDeadline);
+    } else if (sortBy === 'deadline-asc') {
+      return new Date(a.scholarshipDeadline) - new Date(b.scholarshipDeadline);
+    }
+    return 0;
   });
 
   const updateStatusMutation = useMutation({
@@ -200,49 +227,43 @@ const ManageAppliedApplication = () => {
     <div className="p-4 md:p-8">
       <h2 className="text-2xl font-bold mb-6 text-teal-700">Manage Applied Applications</h2>
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="flex items-center">
-            <FaClock className="text-yellow-500 text-2xl mr-3" />
-            <div>
-              <p className="text-sm text-gray-600">Pending</p>
-              <p className="text-2xl font-bold text-yellow-600">
-                {applications.filter(app => app.status === 'pending').length}
-              </p>
-            </div>
-          </div>
+      {/* Filter & Sort Controls */}
+      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+        <div className="flex-1">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Search</label>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            placeholder="Search by name, email, or university..."
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+          />
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="flex items-center">
-            <FaSpinner className="text-blue-500 text-2xl mr-3" />
-            <div>
-              <p className="text-sm text-gray-600">Processing</p>
-              <p className="text-2xl font-bold text-blue-600">
-                {applications.filter(app => app.status === 'processing').length}
-              </p>
-            </div>
-          </div>
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Filter by Status</label>
+          <select
+            value={filterStatus}
+            onChange={e => setFilterStatus(e.target.value)}
+            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+          >
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="completed">Completed</option>
+          </select>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="flex items-center">
-            <FaCheck className="text-green-500 text-2xl mr-3" />
-            <div>
-              <p className="text-sm text-gray-600">Completed</p>
-              <p className="text-2xl font-bold text-green-600">
-                {applications.filter(app => app.status === 'completed').length}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="flex items-center">
-            <FaTimes className="text-red-500 text-2xl mr-3" />
-            <div>
-              <p className="text-sm text-gray-600">Total</p>
-              <p className="text-2xl font-bold text-gray-600">{applications.length}</p>
-            </div>
-          </div>
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Sort by</label>
+          <select
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value)}
+            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+          >
+            <option value="date-desc">Applied Date (Newest First)</option>
+            <option value="date-asc">Applied Date (Oldest First)</option>
+            <option value="deadline-desc">Scholarship Deadline (Newest First)</option>
+            <option value="deadline-asc">Scholarship Deadline (Oldest First)</option>
+          </select>
         </div>
       </div>
 
@@ -260,7 +281,7 @@ const ManageAppliedApplication = () => {
             </tr>
           </thead>
           <tbody>
-            {applications.map(application => (
+            {sortedApplications.map(application => (
               <tr key={application._id} className="border-b hover:bg-teal-50 transition">
                 <td className="py-3 px-4">
                   <div className="flex items-center">
@@ -334,7 +355,7 @@ const ManageAppliedApplication = () => {
                 </td>
               </tr>
             ))}
-            {applications.length === 0 && (
+            {sortedApplications.length === 0 && (
               <tr>
                 <td colSpan={6} className="text-center py-8 text-gray-400">
                   No applications found.

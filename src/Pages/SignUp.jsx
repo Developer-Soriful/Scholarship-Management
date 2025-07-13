@@ -6,6 +6,7 @@ import useAuth from '../Auth/useAuth';
 import axiosSecure from '../Axios/axiosSecure';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import { Auth } from '../Auth/firebase';
+import Swal from 'sweetalert2';
 
 const SignUp = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -13,6 +14,7 @@ const SignUp = () => {
   const [errorPass, setErrorPass] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [googleError, setGoogleError] = useState("");
+  const [signUpError, setSignUpError] = useState("");
   const { createUser, user, loading, googleLogin } = useAuth();
   const navigate = useNavigate();
 
@@ -65,14 +67,12 @@ const SignUp = () => {
       setErrorPass(passwordErrors.join('\n'));
       return;
     }
-  
+    setSignUpError("");
     try {
       // 1. Create user in Firebase
       await createUser(photo, data.name, data.email, password);
-  
       // 2. Wait for Firebase Auth state to update
-      // You may need to wait for the context to update, or get the user directly from Firebase
-      const currentUser = Auth.currentUser; // import { Auth } from '../Auth/firebase'
+      const currentUser = Auth.currentUser;
       const userData = {
         userName: currentUser.displayName,
         email: currentUser.email,
@@ -80,19 +80,37 @@ const SignUp = () => {
         created_at: new Date(),
         last_login: new Date().toISOString(),
       };
-  
       // 3. Now POST to your backend
       await axiosSecure.post('/users', userData);
-  
       // 4. Redirect
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Sign up successful! Please sign in.',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
       navigate('/signin');
     } catch (err) {
+      setSignUpError(err.message || 'Sign up failed. Please try again.');
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: 'Sign up failed!',
+        text: err.message || 'Please try again.',
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
+      });
       console.error('User creation failed', err);
     }
   };
 
   return (
-    <div className="flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4">
+    <div className="w-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 md:p-10">
         <h1 className="text-3xl font-extrabold text-blue-700 mb-2 text-center">Sign Up</h1>
         <p className="text-gray-500 text-center mb-6">Create your account. It's free and easy!</p>
@@ -150,6 +168,7 @@ const SignUp = () => {
             {errors.password && <span className="text-red-500 text-xs">{errors.password.message}</span>}
             {errorPass && <span className="text-red-500 text-xs">{errorPass}</span>}
           </div>
+          {signUpError && <div className="text-red-500 text-xs text-center font-semibold">{signUpError}</div>}
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg shadow transition"

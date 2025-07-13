@@ -25,10 +25,36 @@ const AllAppliedApplications = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [feedback, setFeedback] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('date-desc');
 
   const { data: applications = [], isLoading } = useQuery({
     queryKey: ['applied-scholarships'],
     queryFn: fetchAppliedScholarships,
+  });
+
+  // Search filter logic
+  const filteredApplications = applications.filter(app => {
+    const search = searchTerm.trim().toLowerCase();
+    if (!search) return true;
+    return (
+      app.userName?.toLowerCase().includes(search) ||
+      app.userEmail?.toLowerCase().includes(search) ||
+      app.university?.toLowerCase().includes(search)
+    );
+  });
+  // Sorting logic
+  const sortedApplications = [...filteredApplications].sort((a, b) => {
+    if (sortBy === 'date-desc') {
+      return new Date(b.date) - new Date(a.date);
+    } else if (sortBy === 'date-asc') {
+      return new Date(a.date) - new Date(b.date);
+    } else if (sortBy === 'deadline-desc') {
+      return new Date(b.scholarshipDeadline) - new Date(a.scholarshipDeadline);
+    } else if (sortBy === 'deadline-asc') {
+      return new Date(a.scholarshipDeadline) - new Date(b.scholarshipDeadline);
+    }
+    return 0;
   });
 
   const updateStatusMutation = useMutation({
@@ -198,6 +224,25 @@ const AllAppliedApplications = () => {
       <div className="mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-purple-700 mb-2">All Applied Applications</h2>
         <p className="text-gray-600 text-sm sm:text-base">Review and manage scholarship applications</p>
+        <div className="mt-4 max-w-xs">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            placeholder="Search by name, email, or university..."
+            className="w-full border border-purple-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 mb-2"
+          />
+          <select
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value)}
+            className="w-full border border-purple-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          >
+            <option value="date-desc">Applied Date (Newest First)</option>
+            <option value="date-asc">Applied Date (Oldest First)</option>
+            <option value="deadline-desc">Scholarship Deadline (Newest First)</option>
+            <option value="deadline-asc">Scholarship Deadline (Oldest First)</option>
+          </select>
+        </div>
       </div>
 
       {/* Statistics Cards */}
@@ -248,7 +293,7 @@ const AllAppliedApplications = () => {
 
       {/* Mobile Card View */}
       <div className="block sm:hidden space-y-3">
-        {applications.length === 0 ? (
+        {sortedApplications.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -259,7 +304,7 @@ const AllAppliedApplications = () => {
             <p className="text-gray-500">There are no applications to display at the moment.</p>
           </div>
         ) : (
-          applications.map(application => (
+          sortedApplications.map(application => (
             <div key={application._id} className="bg-white rounded-lg shadow-md p-4 border border-purple-100">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center flex-1">
@@ -354,7 +399,7 @@ const AllAppliedApplications = () => {
             </tr>
           </thead>
           <tbody>
-            {applications.length === 0 ? (
+            {sortedApplications.length === 0 ? (
               <tr>
                 <td colSpan={6} className="text-center py-12 text-gray-500">
                   <div className="max-w-sm mx-auto">
@@ -369,7 +414,7 @@ const AllAppliedApplications = () => {
                 </td>
               </tr>
             ) : (
-              applications.map(application => (
+              sortedApplications.map(application => (
                 <tr key={application._id} className="border-b border-gray-100 hover:bg-purple-50 transition-colors duration-200">
                   <td className="py-3 px-4">
                     <div className="flex items-center">
