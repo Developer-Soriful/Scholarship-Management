@@ -29,6 +29,7 @@ import Payment from "../Pages/Payment";
 import AllReviews from "../Dashboard/ModeratorDashboard/AllReviews";
 import AllAppliedApplications from "../Dashboard/ModeratorDashboard/AllAppliedApplications";
 import ErrorPage from "../Pages/ErrorPage";
+import Analytics from "../Dashboard/AdminDashboard/Analytics";
 
 export const router = createBrowserRouter([
     {
@@ -71,6 +72,7 @@ export const router = createBrowserRouter([
         element: <AdminProtector><AdminDashboard /></AdminProtector>, // Protect all dashboard routes
         children: [
             { index: true, element: <ManageAppliedApplication /> },
+            { path: 'analytics', element: <Analytics /> },
             { path: 'managescholarshipadmin', element: <ManageScholarshipAdmin /> },
             { path: 'addscholarshipadmin', element: <AddScholarshipAdmin /> },
             { path: 'adminprofile', element: <AdminProfile /> },
