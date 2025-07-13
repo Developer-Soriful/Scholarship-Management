@@ -16,6 +16,8 @@ const AllScholarship = () => {
     const [selectedSubject, setSelectedSubject] = useState('all');
     const [sortBy, setSortBy] = useState('newest');
     const [showFilters, setShowFilters] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 8;
 
     const { data: scholarships = [], isLoading, isError } = useQuery({
         queryKey: ['allScholarships'],
@@ -97,6 +99,18 @@ const AllScholarship = () => {
 
         return filtered;
     }, [scholarships, searchTerm, selectedCategory, selectedSubject, sortBy]);
+
+    // Pagination logic
+    const totalPages = Math.ceil(filteredAndSortedScholarships.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentScholarships = filteredAndSortedScholarships.slice(startIndex, endIndex);
+    React.useEffect(() => { setCurrentPage(1); }, [searchTerm, selectedCategory, selectedSubject, sortBy]);
+    const goToPage = (page) => setCurrentPage(page);
+    const goToNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    const goToPrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+    // Show all page numbers
+    const getPageNumbers = () => Array.from({ length: totalPages }, (_, i) => i + 1);
 
     if (isLoading) {
         return (
@@ -252,7 +266,7 @@ const AllScholarship = () => {
 
                 {/* Scholarship Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    {filteredAndSortedScholarships.map((scholarship, index) => (
+                    {currentScholarships.map((scholarship, index) => (
                         <div key={scholarship._id || index} className="group relative">
                             <div className="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 overflow-hidden border border-gray-100">
                                 {/* Card Header */}
@@ -380,6 +394,35 @@ const AllScholarship = () => {
                         </div>
                     ))}
                 </div>
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center mt-12">
+                        <button
+                            onClick={goToPrevPage}
+                            disabled={currentPage === 1}
+                            className="mx-2 px-4 py-2 border rounded bg-white text-black disabled:opacity-50"
+                        >
+                            &laquo;
+                        </button>
+                        {getPageNumbers().map((page) => (
+                            <button
+                                key={page}
+                                onClick={() => goToPage(page)}
+                                className={`mx-1 px-4 py-2 rounded ${currentPage === page ? 'bg-red-500 text-white' : 'bg-white text-black border'}`}
+                                disabled={currentPage === page}
+                            >
+                                {page}
+                            </button>
+                        ))}
+                        <button
+                            onClick={goToNextPage}
+                            disabled={currentPage === totalPages}
+                            className="mx-2 px-4 py-2 border rounded bg-white text-black disabled:opacity-50"
+                        >
+                            &raquo;
+                        </button>
+                    </div>
+                )}
 
                 {/* Empty State */}
                 {filteredAndSortedScholarships.length === 0 && (

@@ -119,7 +119,7 @@ const MyApplication = () => {
         toast: true,
         position: 'top-end',
         icon: 'success',
-        title: 'Review submitted!',
+        title: 'Review submitted successfully!',
         showConfirmButton: false,
         timer: 1500,
         timerProgressBar: true,
@@ -130,7 +130,7 @@ const MyApplication = () => {
         toast: true,
         position: 'top-end',
         icon: 'error',
-        title: 'Failed to submit review',
+        title: 'Already Review this ',
         text: err?.response?.data?.message || err.message,
         showConfirmButton: false,
         timer: 2000,
@@ -228,8 +228,10 @@ const MyApplication = () => {
   const handleReviewSubmit = (e) => {
     e.preventDefault();
     if (!reviewApp || !reviewRating || !reviewComment || !reviewDate) return;
-    reviewMutation.mutate({
-      rating: reviewRating,
+    
+    // Prepare review data with all required fields
+    const reviewData = {
+      rating: parseInt(reviewRating),
       comment: reviewComment,
       date: reviewDate,
       scholarshipName: reviewApp.scholarshipName || reviewApp.scholarship || '',
@@ -238,7 +240,9 @@ const MyApplication = () => {
       userName: user.displayName,
       userImage: user.photoURL || '',
       userEmail: user.email,
-    });
+    };
+    
+    reviewMutation.mutate(reviewData);
   };
 
   
@@ -282,7 +286,7 @@ const MyApplication = () => {
                 <td className="px-4 py-3">${app.applicationFees || '-'}</td>
                 <td className="px-4 py-3">${app.serviceCharge || '-'}</td>
                 <td className="px-4 py-3">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${app.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : app.status === 'processing' ? 'bg-blue-100 text-blue-800' : app.status === 'completed' ? 'bg-green-100 text-green-800' : app.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}`}>{app.status === 'rejected' ? 'Rejected' : ''}</span>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${app.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : app.status === 'processing' ? 'bg-blue-100 text-blue-800' : app.status === 'completed' ? 'bg-green-100 text-green-800' : app.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}`}>{app.status}</span>
                 </td>
                 <td className="px-4 py-3 space-x-2 flex items-center">
                   {/* Details Button */}
@@ -351,56 +355,104 @@ const MyApplication = () => {
       {/* Add Review Modal */}
       {showReviewModal && reviewApp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xl bg-black/30 bg-opacity-40">
-          <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-blue-100 flex flex-col" style={{ minHeight: '40vh', maxHeight: '80vh', overflowY: 'auto' }}>
-            <button onClick={handleReviewModalClose} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl font-bold focus:outline-none" aria-label="Close"><FaTimes /></button>
-            <h3 className="text-2xl font-bold mb-6 text-blue-700 text-center">Add Review</h3>
-            <form className="space-y-5" onSubmit={handleReviewSubmit}>
+          <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 border border-blue-100">
+            <button 
+              onClick={handleReviewModalClose} 
+              className="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl font-bold focus:outline-none transition-colors" 
+              aria-label="Close"
+            >
+              <FaTimes />
+            </button>
+            
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">Rate Your Experience</h3>
+              <p className="text-gray-600 text-sm">
+                Share your thoughts about {reviewApp.scholarshipName || reviewApp.scholarship || 'this scholarship'}
+              </p>
+            </div>
+
+            <form className="space-y-6" onSubmit={handleReviewSubmit}>
+              {/* Star Rating */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Scholarship Name</label>
-                <input type="text" value={reviewApp.scholarshipName || reviewApp.scholarship || ''} readOnly className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-100" />
+                <label className="block text-sm font-semibold text-gray-700 mb-3 text-center">
+                  How would you rate your experience?
+                </label>
+                <div className="flex justify-center space-x-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setReviewRating(star.toString())}
+                      className={`text-3xl transition-all duration-200 hover:scale-110 ${
+                        parseInt(reviewRating) >= star
+                          ? 'text-yellow-400'
+                          : 'text-gray-300 hover:text-yellow-300'
+                      }`}
+                    >
+                      ★
+                    </button>
+                  ))}
+                </div>
+                {reviewRating && (
+                  <p className="text-center text-sm text-gray-600 mt-2">
+                    You rated: {reviewRating} star{parseInt(reviewRating) > 1 ? 's' : ''}
+                  </p>
+                )}
               </div>
+
+              {/* Comment */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">University Name</label>
-                <input type="text" value={reviewApp.university} readOnly className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-100" />
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Tell us about your experience
+                </label>
+                <textarea 
+                  value={reviewComment} 
+                  onChange={e => setReviewComment(e.target.value)} 
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all resize-none" 
+                  placeholder="Share your thoughts, feedback, or suggestions..."
+                  required 
+                  rows={4}
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  {reviewComment.length}/500 characters
+                </p>
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">University ID</label>
-                <input type="text" value={reviewApp.scholarshipId || reviewApp.universityId || ''} readOnly className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-100" />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Your Name</label>
-                <input type="text" value={user.displayName} readOnly className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-100" />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Your Email</label>
-                <input type="text" value={user.email} readOnly className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-100" />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Your Image (optional)</label>
-                <input type="text" value={user.photoURL || ''} readOnly className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-100" />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Rating Point</label>
-                <select value={reviewRating} onChange={e => setReviewRating(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" required>
-                  <option value="">Select rating</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Review Comment</label>
-                <textarea value={reviewComment} onChange={e => setReviewComment(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" required rows={3} />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Review Date</label>
-                <input type="date" value={reviewDate} onChange={e => setReviewDate(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" required />
-              </div>
-              <div className="flex gap-3 mt-6">
-                <button type="button" onClick={handleReviewModalClose} className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition text-base">Cancel</button>
-                <button type="submit" disabled={reviewMutation.isLoading} className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-base disabled:opacity-60 disabled:cursor-not-allowed">{reviewMutation.isLoading ? 'Submitting...' : 'Submit Review'}</button>
+
+              {/* Hidden fields for database */}
+              <input type="hidden" value={reviewDate} />
+              <input type="hidden" value={reviewApp.scholarshipName || reviewApp.scholarship || ''} />
+              <input type="hidden" value={reviewApp.university} />
+              <input type="hidden" value={reviewApp.scholarshipId || reviewApp.universityId || ''} />
+              <input type="hidden" value={user.displayName} />
+              <input type="hidden" value={user.email} />
+              <input type="hidden" value={user.photoURL || ''} />
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4">
+                <button 
+                  type="button" 
+                  onClick={handleReviewModalClose} 
+                  className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 font-medium"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={reviewMutation.isLoading || !reviewRating || !reviewComment} 
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-blue-600 disabled:hover:to-purple-600"
+                >
+                  {reviewMutation.isLoading ? (
+                    <span className="flex items-center justify-center">
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Submitting...
+                    </span>
+                  ) : (
+                    'Submit Review'
+                  )}
+                </button>
               </div>
             </form>
           </div>

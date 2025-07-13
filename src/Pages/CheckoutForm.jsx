@@ -62,7 +62,9 @@ const applyScholarship = async ({ data, scholarship, user }) => {
         userId: user._id || user.uid || '',
         scholarshipId: scholarship._id,
         date: new Date().toISOString(),
-        status: 'pending' // Add default status
+        status: 'pending', // Add default status
+        applicationFees: scholarship.applicationFees, // Added
+        serviceCharge: scholarship.serviceCharge      // Added
     };
 
 
