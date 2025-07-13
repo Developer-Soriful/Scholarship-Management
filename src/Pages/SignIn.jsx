@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 const SignIn = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const { loginUser, user } = useAuth()
+  console.log('SignIn.jsx user:', user);
   const navigate = useNavigate()
   const [loginError, setLoginError] = useState("");
 
@@ -22,6 +23,10 @@ const SignIn = () => {
     setLoginError("");
     loginUser(data.email, data.password)
       .then(async () => {
+        if (!user) {
+          setLoginError("User not found. Please try again.");
+          return;
+        }
         const userData = {
           email: data.email,
           last_login: new Date().toISOString()

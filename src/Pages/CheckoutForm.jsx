@@ -108,7 +108,7 @@ const CheckoutForm = () => {
 
     // Mutation for applying scholarship
     const applyMutation = useMutation({
-        mutationFn: ({ data, scholarship, user  }) => applyScholarship({ data, scholarship, user }),
+        mutationFn: ({ data, scholarship, user }) => applyScholarship({ data, scholarship, user }),
         onSuccess: (data) => {
             setShowModal(false);
             reset();
@@ -137,6 +137,14 @@ const CheckoutForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!stripe || !elements) return;
+        if (!user) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Please login first',
+                text: 'You need to be logged in to make this payment.',
+            });
+            return;
+        }
         const card = elements.getElement(CardElement);
         const { error, paymentMethod } = await stripe.createPaymentMethod({
             type: "card",
@@ -171,7 +179,7 @@ const CheckoutForm = () => {
             } catch (err) {
                 console.error('Failed to update paymentStatus:', err);
             }
-            setShowModal(true);     
+            setShowModal(true);
         }
     };
 
@@ -265,7 +273,7 @@ const CheckoutForm = () => {
                     {applyMutation.isSuccess && <div className="text-green-600 text-sm font-semibold text-center">Payment successful!</div>}
                     <button
                         type="submit"
-                        disabled={!stripe || !clientSecret || applyMutation.isLoading }
+                        disabled={!stripe || !clientSecret || applyMutation.isLoading}
                         className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-lg"
                     >
                         {applyMutation.isLoading ? 'Processing...' : 'Pay'}

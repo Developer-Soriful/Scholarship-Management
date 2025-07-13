@@ -47,6 +47,10 @@ const AddScholarshipAdmin = () => {
       setImgError('Please upload a university image/logo.');
       return;
     }
+    if (!user) {
+      setImgError('Please login first to add scholarship.');
+      return;
+    }
     setImgError('');
     const scholarshipData = {
       scholarshipName: data.scholarshipName,

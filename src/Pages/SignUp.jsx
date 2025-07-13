@@ -73,6 +73,10 @@ const SignUp = () => {
       await createUser(photo, data.name, data.email, password);
       // 2. Wait for Firebase Auth state to update
       const currentUser = Auth.currentUser;
+      if (!currentUser) {
+        setSignUpError("User creation failed. Please try again.");
+        return;
+      }
       const userData = {
         userName: currentUser.displayName,
         email: currentUser.email,

@@ -4,6 +4,7 @@ import axiosSecure from '../../Axios/axiosSecure';
 import LoadingSpinner from '../../Components/LoadingSpinner';
 import Swal from 'sweetalert2';
 import { FaStar, FaTrash, FaUser, FaUniversity, FaCalendar, FaGraduationCap } from 'react-icons/fa';
+import useAuth from '../../Auth/useAuth';
 
 const fetchReviews = async () => {
     const res = await axiosSecure.get('/scholarship');
@@ -14,10 +15,12 @@ const AllReviews = () => {
     const queryClient = useQueryClient();
     const [selectedReview, setSelectedReview] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const { user } = useAuth();
 
     const { data: scholarships = [], isLoading } = useQuery({
         queryKey: ['scholarships'],
         queryFn: fetchReviews,
+        enabled: !!user,
     });
 
     // Extract all ratings from scholarships

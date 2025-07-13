@@ -4,6 +4,7 @@ import axiosSecure from '../../Axios/axiosSecure';
 import LoadingSpinner from '../../Components/LoadingSpinner';
 import Swal from 'sweetalert2';
 import { FaEye, FaComment, FaTimes, FaCheck, FaClock, FaSpinner } from 'react-icons/fa';
+import useAuth from '../../Auth/useAuth';
 
 const fetchAppliedScholarships = async () => {
   const res = await axiosSecure.get('/allApplied-scholarship');
@@ -27,10 +28,12 @@ const AllAppliedApplications = () => {
   const [feedback, setFeedback] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('date-desc');
+  const { user } = useAuth();
 
   const { data: applications = [], isLoading } = useQuery({
     queryKey: ['applied-scholarships'],
     queryFn: fetchAppliedScholarships,
+    enabled: !!user,
   });
 
   // Search filter logic

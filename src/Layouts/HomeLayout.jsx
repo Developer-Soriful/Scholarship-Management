@@ -1,20 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import { Outlet } from "react-router";
 import useUserRole from "../Auth/useUserRole";
 import useAuth from "../Auth/useAuth";
-import { attachAuthInterceptor } from "../Axios/axiosSecure";
 
 const HomeLayout = () => {
-  const { user } = useAuth()
-  useEffect(() => {
-    if (user) {
-      attachAuthInterceptor(user);
-    }
-  }, [user]);
-  const { role } = useUserRole()
-  console.log(role);
+  const { user, loading } = useAuth();
+  const { role } = useUserRole();
+  console.log('HomeLayout user:', user, 'loading:', loading);
 
   return <>
     <header className="w-11/12 mx-auto" >

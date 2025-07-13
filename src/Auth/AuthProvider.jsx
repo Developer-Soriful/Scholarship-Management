@@ -9,6 +9,7 @@ import {
 import { createContext, useEffect, useState } from "react";
 import { Auth } from "./firebase";
 import { GoogleAuthProvider } from "firebase/auth";
+import { attachAuthInterceptor } from "../Axios/axiosSecure";
 
 export const AuthContext = createContext(null);
 const AuthProvider = ({ children }) => {
@@ -44,6 +45,12 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(Auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
+      
+      // Attach interceptor when user is available
+      if (currentUser) {
+        console.log('AuthProvider: Attaching interceptor for user:', currentUser.email);
+        attachAuthInterceptor(currentUser);
+      }
     });
     return () => unsubscribe();
   }, []);

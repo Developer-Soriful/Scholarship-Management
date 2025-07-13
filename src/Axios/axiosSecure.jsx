@@ -6,9 +6,15 @@ const axiosSecure = axios.create({
     baseURL: "http://localhost:5000",
 });
 
+let interceptorId = null;
+
 // This function should be called from inside a component, passing the user
 export const attachAuthInterceptor = (user) => {
-    axiosSecure.interceptors.request.use(
+    // Remove previous interceptor if exists
+    if (interceptorId !== null) {
+        axiosSecure.interceptors.request.eject(interceptorId);
+    }
+    interceptorId = axiosSecure.interceptors.request.use(
         async (config) => {
             if (user) {
                 const token = await getIdToken(user);

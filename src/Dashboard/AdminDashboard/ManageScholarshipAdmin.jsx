@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss';
 
 const fetchScholarships = async () => {
-  const res = await axiosSecure.get('/scholarship');
+  const res = await axiosSecure.get('/scholarship-admin');
   return res.data;
 };
 
@@ -26,10 +26,11 @@ const ManageScholarshipAdmin = () => {
   const { data: scholarships = [], isLoading, isError } = useQuery({
     queryKey: ['scholarships'],
     queryFn: fetchScholarships,
+    enabled: !!user,
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => axiosSecure.delete(`/scholarship/${id}`),
+    mutationFn: (id) => axiosSecure.delete(`/scholarship-admin/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries(['scholarships']);
       Swal.fire({

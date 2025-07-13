@@ -26,6 +26,7 @@ const ManageScholarship = () => {
   const { data: scholarships = [], isLoading, isError } = useQuery({
     queryKey: ['scholarships'],
     queryFn: fetchScholarships,
+    enabled: !!user,
   });
 
   const deleteMutation = useMutation({

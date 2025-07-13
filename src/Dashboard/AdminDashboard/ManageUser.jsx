@@ -3,6 +3,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axiosSecure from '../../Axios/axiosSecure';
 import LoadingSpinner from '../../Components/LoadingSpinner';
 import Swal from 'sweetalert2';
+import useAuth from '../../Auth/useAuth';
+
 
 const roleOptions = ['user', 'moderator', 'admin'];
 
@@ -14,11 +16,25 @@ const fetchUsers = async () => {
 const ManageUser = () => {
     const queryClient = useQueryClient();
     const [roleChange, setRoleChange] = useState([])
+    const { user, loading } = useAuth();
     const { data: users = [], isLoading } = useQuery({
         queryKey: ['users'],
         queryFn: fetchUsers,
+        enabled: !loading && !!user,
     });
     const handleUpdateRole = async (user) => {
+        if (!user || !roleChange) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Please select a role first',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+            });
+            return;
+        }
         const updateData = {
             email: user.email,
             role: roleChange
