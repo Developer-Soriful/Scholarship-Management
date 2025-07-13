@@ -4,8 +4,9 @@ import Footer from '../../Components/Footer';
 
 const menuItems = [
     { name: 'Home', path: '/' },
-    { name: 'Admin Profile', path: 'adminProfile' },
     { name: 'Analytics', path: 'analytics' },
+    { name: 'Admin Profile', path: 'adminProfile' },
+    { name: 'Manage Applied Application', path: 'manageapplied' },
     { name: 'Manage Scholarship', path: 'managescholarshipadmin' },
     { name: 'Add Scholarship', path: 'addscholarshipadmin' },
     { name: 'Manage User', path: 'manageuser' },

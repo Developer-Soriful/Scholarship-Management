@@ -52,6 +52,7 @@ export const router = createBrowserRouter([
         element: <PrivateRoute><UserDashboard /></PrivateRoute>, // Protect all dashboard routes
         children: [
             { index: true, element: <PrivateRoute><MyApplication /> </PrivateRoute> },
+            { path: '', element: <PrivateRoute><MyApplication /> </PrivateRoute> },
             { path: 'myProfile', element: <PrivateRoute><MyProfile /> </PrivateRoute> },
             { path: 'myReview', element: <PrivateRoute> <MyReview /></PrivateRoute> }
         ]
@@ -61,6 +62,7 @@ export const router = createBrowserRouter([
         element: <ModeratorProtector><ModeratorDashboard /></ModeratorProtector>,  // Protect all dashboard routes
         children: [
             { index: true, element: <AllAppliedApplications /> },
+            { path: 'appliedapplications', element: <AllAppliedApplications /> },
             { path: 'addscholarship', element: <AddScholarship /> },
             { path: 'allReviews', element: <AllReviews /> },
             { path: 'managescholarship', element: <ManageScholarship /> },
@@ -71,8 +73,9 @@ export const router = createBrowserRouter([
         path: '/admindashboard',
         element: <AdminProtector><AdminDashboard /></AdminProtector>, // Protect all dashboard routes
         children: [
-            { index: true, element: <ManageAppliedApplication /> },
+            { index: true, element: <Analytics /> },
             { path: 'analytics', element: <Analytics /> },
+            { path: 'manageapplied', element: <ManageAppliedApplication /> },
             { path: 'managescholarshipadmin', element: <ManageScholarshipAdmin /> },
             { path: 'addscholarshipadmin', element: <AddScholarshipAdmin /> },
             { path: 'adminprofile', element: <AdminProfile /> },
