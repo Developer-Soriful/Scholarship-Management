@@ -11,7 +11,7 @@ const HomeLayout = () => {
   console.log('HomeLayout user:', user, 'loading:', loading);
 
   return <>
-    <header className="w-11/12 mx-auto" >
+    <header className="w-11/12  mx-auto backdrop-blur-xl bg-white/20 shadow-lg sticky top-0 z-50 border-b border-gray-200" >
       <Navbar />
     </header>
     <main className="w-11/12 mx-auto flex justify-center items-center" style={{ minHeight: 'calc(100vh - 184.99px)' }}>

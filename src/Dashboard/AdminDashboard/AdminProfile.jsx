@@ -56,7 +56,7 @@ const AdminProfile = () => {
   };
 
   return (
-    <div className="relative flex items-center justify-center bg-gradient-to-br from-emerald-50 via-green-50 to-teal-100 py-4 md:py-6 px-2 w-full h-[75vh] overflow-y-auto h-full">
+    <div className="relative flex items-center justify-center bg-gradient-to-br from-emerald-50 via-green-50 to-teal-100 py-4 md:py-6 px-2 w-full  overflow-y-auto h-full">
       {/* Animated SVG background shapes */}
       <svg className="absolute left-0 top-0 w-32 h-32 md:w-48 md:h-48 opacity-10 animate-pulse pointer-events-none" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
         <path fill="#10b981" d="M44.8,-67.2C56.6,-59.7,62.7,-42.2,68.2,-25.6C73.7,-9,78.6,6.7,74.2,20.2C69.8,33.7,56.1,45,41.2,54.2C26.3,63.4,10.1,70.5,-7.2,74.2C-24.5,77.9,-42.9,78.2,-54.7,68.2C-66.5,58.2,-71.7,37.9,-72.2,19.1C-72.7,0.3,-68.5,-16.9,-60.2,-30.7C-51.9,-44.5,-39.5,-54.9,-25.6,-61.7C-11.7,-68.5,4.7,-71.7,20.7,-70.1C36.7,-68.5,52.9,-62.7,44.8,-67.2Z" transform="translate(100 100)" />
