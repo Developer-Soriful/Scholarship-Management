@@ -9,7 +9,7 @@ const fetchTopScholarships = async () => {
     const res = await axiosSecure.get('/top-scholarships');
     return res.data;
 };
-
+// for git commit 
 const TopScholarship = () => {
     const { data: scholarships = [], isLoading, isError } = useQuery({
         queryKey: ['topScholarships'],
