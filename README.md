@@ -4,19 +4,19 @@ A full-stack MERN application for managing and applying to university scholarshi
 
 ## 🚀 Live Project
 
-**Frontend:** [Live Site URL here]  
+**Frontend:** [https://scholarship-platform-2f772.web.app/]  
 **Admin Credentials:**  
-Email: admin@example.com  
-Password: admin_password  
+Email:  admin@gmail.com 
+Password: Admin@1
 
 **Moderator Credentials:**  
-Email: moderator@example.com  
-Password: moderator_password  
+Email:  moderator@gmail.com
+Password: Moderator@1
 
 ## 📁 Repository Links
 
-- **Frontend Repo:** [GitHub Frontend Link]  
-- **Backend Repo:** [GitHub Backend Link]
+- **Frontend Repo:** [https://github.com/Programming-Hero-Web-Course4/b11a12-client-side-Developer-Soriful]  
+- **Backend Repo:** [https://github.com/Programming-Hero-Web-Course4/b11a12-server-side-Developer-Soriful]
 
 ## 🎯 Project Purpose
 
