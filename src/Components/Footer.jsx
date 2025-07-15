@@ -25,4 +25,4 @@ const Footer = () => {
 };
 
 export default Footer;
-// added
+// added new
