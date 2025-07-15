@@ -13,8 +13,7 @@ const Footer = () => {
         {/* Links */}
         <div className="flex space-x-6">
           <Link to="/" className="text-black hover:text-blue-600 transition">Home</Link>
-          <Link to="/all-scholarship" className="text-black hover:text-blue-600 transition">All Scholarship</Link>
-          <Link to="/contact" className="text-black hover:text-blue-600 transition">Contact</Link>
+          <Link to="/allScholarship" className="text-black hover:text-blue-600 transition">All Scholarship</Link>
         </div>
         {/* Copyright */}
         <div className="text-sm text-black text-center md:text-right">
