@@ -3,7 +3,7 @@ import axios from "axios";
 import { getIdToken } from "firebase/auth";
 
 const axiosSecure = axios.create({
-    baseURL: "https://a12-server-seven.vercel.app",
+    baseURL: "https://server-side-12-1x95.onrender.com",
 });
 
 let interceptorId = null;

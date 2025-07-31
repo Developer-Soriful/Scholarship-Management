@@ -389,8 +389,7 @@ const ScholarshipDetails = () => {
 
                                 <button
                                     className={`w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105
-                                    ${scholarship.paymentArr?.paymentStatus && isPaidByUser ? 'opacity-60 cursor-not-allowed' : ''}`}
-                                    disabled={scholarship.paymentArr?.paymentStatus && isPaidByUser}
+                                    ${scholarship.paymentArr?.paymentStatus && isPaidByUser ? 'opacity-60 cursor-not-allowed' : ''}`}    
                                     onClick={() => navigate(`/payment/${id}`)}
                                 >
                                     {scholarship.paymentArr?.paymentStatus && isPaidByUser  ? 'Application Completed' : 'Apply for Scholarship'}
@@ -541,7 +540,6 @@ const ScholarshipDetails = () => {
                         {/* Submit Button */}
                         <button
                             onClick={handleReviewSubmit}
-                            disabled={reviewMutation.isPending}
                             className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none"
                         >
                             {reviewMutation.isPending ? 'Submitting...' : 'Submit Review'}
