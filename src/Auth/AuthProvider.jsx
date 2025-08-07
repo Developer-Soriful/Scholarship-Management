@@ -7,7 +7,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
-import { Auth } from "./firebase";
+import { Auth } from "../firebase/Firebase";
 import { GoogleAuthProvider } from "firebase/auth";
 import { attachAuthInterceptor } from "../Axios/axiosSecure";
 
