@@ -46,7 +46,7 @@ const Navbar = () => {
 
   return (
     <nav>
-      <div className=" px-4 sm:px-6 lg:px-8">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           
           {/* Logo */}
