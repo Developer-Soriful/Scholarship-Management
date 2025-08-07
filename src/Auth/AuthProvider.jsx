@@ -7,9 +7,9 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
-import { Auth } from "../firebase/Firebase";
 import { GoogleAuthProvider } from "firebase/auth";
 import { attachAuthInterceptor } from "../Axios/axiosSecure";
+import { Auth } from "../firebase/Firebase";
 
 export const AuthContext = createContext(null);
 const AuthProvider = ({ children }) => {
@@ -27,6 +27,7 @@ const AuthProvider = ({ children }) => {
         })
       })
   };
+
   //   this function for user login
   const loginUser = (email, password) => {
     return signInWithEmailAndPassword(Auth, email, password);
