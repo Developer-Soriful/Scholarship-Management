@@ -13,11 +13,6 @@ Password: Admin@1
 Email:  moderator@gmail.com
 Password: Moderator@1
 
-## 📁 Repository Links
-
-- **Frontend Repo:** [https://github.com/Programming-Hero-Web-Course4/b11a12-client-side-Developer-Soriful]  
-- **Backend Repo:** [https://github.com/Programming-Hero-Web-Course4/b11a12-server-side-Developer-Soriful]
-
 ## 🎯 Project Purpose
 
 This system was built to:
