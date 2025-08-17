@@ -453,7 +453,7 @@ const Analytics = () => {
       {/* Tab Navigation */}
       <div className="mb-8">
         <div className="border-b border-gray-200">
-          <nav className="-mb-px flex flex-wrap space-x-8">
+          <nav className="-mb-px flex overflow-x-auto space-x-8">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
