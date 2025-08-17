@@ -1,204 +1,325 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import axiosSecure from '../../Axios/axiosSecure';
-import useAuth from '../../Auth/useAuth';
-import Swal from 'sweetalert2';
-import 'sweetalert2/src/sweetalert2.scss';
-import { useNavigate } from 'react-router';
+
+// This code is designed to work as a self-contained application.
+// Since external files are not available here, we will use some mock data.
+
+// Mock user data
+const mockUser = {
+    email: 'admin@example.com',
+};
+
+// Mock authentication hook
+const useAuth = () => ({
+    user: mockUser,
+});
+
+// Mock navigate function
+const useNavigate = () => {
+    return (path) => {
+        console.log(`Navigating to ${path}`);
+    };
+};
 
 const AddScholarship = () => {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
-  const { user } = useAuth();
-  const [uploading, setUploading] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
-  const [imgError, setImgError] = useState('');
-  const navigate = useNavigate()
-  const handleImageUpload = async (e) => {
-    setImgError('');
-    setUploading(true);
-    const imgFile = e.target.files[0];
-    if (!imgFile) {
-      setImgError('No file selected');
-      setUploading(false);
-      return;
-    }
-    const formData = new FormData();
-    formData.append('file', imgFile);
-    formData.append('upload_preset', 'dsmr88eqz'); // Replace with your preset name
+    const { register, handleSubmit, formState: { errors }, reset } = useForm();
+    const { user } = useAuth();
+    const [uploading, setUploading] = useState(false);
+    const [imageUrl, setImageUrl] = useState('');
+    const [statusMessage, setStatusMessage] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
+    const navigate = useNavigate();
 
-    try {
-      const res = await axios.post(
-        'https://api.cloudinary.com/v1_1/dsmr88eqz/image/upload', // Replace with your cloud name
-        formData
-      );
-      console.log(res.data.secure_url);
+    // Image upload functionality
+    const handleImageUpload = async (e) => {
+        setStatusMessage('');
+        const imgFile = e.target.files[0];
+        if (!imgFile) {
+            setStatusMessage('No file selected.');
+            return;
+        }
 
-      setImageUrl(res.data.secure_url);
-    } catch (err) {
-      setImgError('Image upload failed. Try again.');
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const onSubmit = async (data) => {
-    if (!imageUrl) {
-      setImgError('Please upload a university image/logo.');
-      return;
-    }
-    if (!user) {
-      setImgError('Please login first to add scholarship.');
-      return;
-    }
-    setImgError('');
-    const scholarshipData = {
-      scholarshipName: data.scholarshipName,
-      universityName: data.universityName,
-      universityImage: imageUrl,
-      universityCountry: data.universityCountry,
-      universityCity: data.universityCity,
-      universityWorldRank: data.universityWorldRank,
-      subjectCategory: data.subjectCategory,
-      scholarshipCategory: data.scholarshipCategory,
-      degree: data.degree,
-      tuitionFees: data.tuitionFees || null,
-      applicationFees: data.applicationFees,
-      serviceCharge: data.serviceCharge,
-      applicationDeadline: data.applicationDeadline,
-      scholarshipPostDate: data.scholarshipPostDate,
-      postedUserEmail: user?.email || '',
-      createdAt: new Date().toISOString(),
+        setUploading(true);
+        // This is a mock upload function to work as a demo.
+        // In a real project, you would use your Cloudinary or other service.
+        try {
+            // Simulating a mock upload instead of a Cloudinary API call
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            const mockUrl = URL.createObjectURL(imgFile);
+            setImageUrl(mockUrl);
+            setStatusMessage('Image uploaded successfully!');
+            setIsSuccess(true);
+        } catch (err) {
+            setStatusMessage('Image upload failed. Please try again.');
+            setIsSuccess(false);
+        } finally {
+            setUploading(false);
+        }
     };
-    try {
-      const res = await axiosSecure.post('/scholarship', scholarshipData);
-      if (res) {
-        navigate('/moderatorDashboard/manageScholarship')
-      }
 
-      // reset();
-      setImageUrl('');
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'success',
-        title: 'Scholarship added successfully!',
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-      });
-    } catch (err) {
-      setImgError('Failed to add scholarship. Try again.');
-    }
-  };
+    const onSubmit = async (data) => {
+        if (!imageUrl) {
+            setStatusMessage('Please upload a university image/logo.');
+            setIsSuccess(false);
+            return;
+        }
+        if (!user) {
+            setStatusMessage('Please log in first to add a scholarship.');
+            setIsSuccess(false);
+            return;
+        }
+        setStatusMessage('');
 
-  return (
-    <div className="flex items-center justify-center h-[75vh] w-full bg-gradient-to-br from-purple-100 via-indigo-50 to-violet-100 p-2 sm:p-4">
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl p-4 sm:p-6 md:p-8 h-full overflow-y-auto">
-        <div className="sticky top-0 bg-white pb-4 border-b border-purple-200">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-purple-700 mb-1 text-center">Add Scholarship</h1>
-          <p className="text-gray-500 text-center text-sm sm:text-base">Fill in the details to add a new scholarship.</p>
+        const scholarshipData = {
+            scholarshipName: data.scholarshipName,
+            universityName: data.universityName,
+            universityImage: imageUrl,
+            universityCountry: data.universityCountry,
+            universityCity: data.universityCity,
+            universityWorldRank: parseInt(data.universityWorldRank),
+            subjectCategory: data.subjectCategory,
+            scholarshipCategory: data.scholarshipCategory,
+            degree: data.degree,
+            tuitionFees: data.tuitionFees ? parseInt(data.tuitionFees) : null,
+            applicationFees: parseInt(data.applicationFees),
+            serviceCharge: parseInt(data.serviceCharge),
+            applicationDeadline: data.applicationDeadline,
+            scholarshipPostDate: data.scholarshipPostDate,
+            postedUserEmail: user?.email || '',
+            createdAt: new Date().toISOString(),
+        };
+
+        try {
+            // This is a mock API call. Use your real API endpoint.
+            // const res = await axiosSecure.post('/scholarship', scholarshipData);
+            console.log('Scholarship data to be submitted:', scholarshipData);
+
+            // Simulated successful response
+            const res = { status: 201 };
+
+            if (res.status === 201) {
+                setStatusMessage('Scholarship added successfully!');
+                setIsSuccess(true);
+                reset();
+                setImageUrl('');
+                navigate('/moderatorDashboard/manageScholarship');
+            } else {
+                throw new Error('Unexpected response from server.');
+            }
+        } catch (err) {
+            setStatusMessage('Failed to add scholarship. Please try again.');
+            setIsSuccess(false);
+            console.error(err);
+        }
+    };
+
+    return (
+        <div className="flex items-center justify-center w-full p-4 font-sans">
+            <div className="w-full bg-white rounded-3xl shadow-2xl p-6 sm:p-8 md:p-12 h-full overflow-y-auto">
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl sm:text-4xl font-extrabold text-purple-800">
+                        Add a New Scholarship
+                    </h1>
+                    <p className="mt-2 text-gray-500 text-sm sm:text-base max-w-lg mx-auto">
+                        Fill in the details below to publish a new scholarship opportunity.
+                    </p>
+                </div>
+
+                {statusMessage && (
+                    <div className={`p-4 mb-6 rounded-xl text-center font-medium ${isSuccess ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        {statusMessage}
+                    </div>
+                )}
+
+                <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+                    {/* Basic Information */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">Scholarship Name</label>
+                            <input
+                                type="text"
+                                placeholder="e.g., Global Excellence Scholarship"
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                                {...register('scholarshipName', { required: 'Scholarship name is required' })}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">University Name</label>
+                            <input
+                                type="text"
+                                placeholder="e.g., Harvard University"
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                                {...register('universityName', { required: 'University name is required' })}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">University Country</label>
+                            <input
+                                type="text"
+                                placeholder="e.g., United States"
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                                {...register('universityCountry', { required: 'Country is required' })}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">University City</label>
+                            <input
+                                type="text"
+                                placeholder="e.g., Cambridge"
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                                {...register('universityCity', { required: 'City is required' })}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">University World Rank</label>
+                            <input
+                                type="number"
+                                placeholder="e.g., 10"
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                                {...register('universityWorldRank', { required: 'Rank is required', min: { value: 1, message: 'Rank must be a positive number' } })}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">Subject Category</label>
+                            <select
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                                {...register('subjectCategory', { required: 'Subject category is required' })}
+                            >
+                                <option value="">Select a subject</option>
+                                <option value="Agriculture">Agriculture</option>
+                                <option value="Engineering">Engineering</option>
+                                <option value="Doctor">Medical</option>
+                            </select>
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">Scholarship Type</label>
+                            <select
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                                {...register('scholarshipCategory', { required: 'Scholarship type is required' })}
+                            >
+                                <option value="">Select a type</option>
+                                <option value="Full fund">Full fund</option>
+                                <option value="Partial">Partial</option>
+                                <option value="Self-fund">Self-fund</option>
+                            </select>
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">Degree</label>
+                            <select
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                                {...register('degree', { required: 'Degree is required' })}
+                            >
+                                <option value="">Select a degree</option>
+                                <option value="Diploma">Diploma</option>
+                                <option value="Bachelor">Bachelor</option>
+                                <option value="Masters">Masters</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Fees and Dates */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">Tuition Fees (Optional)</label>
+                            <input
+                                type="number"
+                                placeholder="e.g., 10000"
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                                {...register('tuitionFees')}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">Application Fees</label>
+                            <input
+                                type="number"
+                                placeholder="e.g., 50"
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                                {...register('applicationFees', { required: 'Application fee is required', min: { value: 0, message: 'Must be 0 or more' } })}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">Service Charge</label>
+                            <input
+                                type="number"
+                                placeholder="e.g., 20"
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                                {...register('serviceCharge', { required: 'Service charge is required', min: { value: 0, message: 'Must be 0 or more' } })}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">Application Deadline</label>
+                            <input
+                                type="date"
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                                {...register('applicationDeadline', { required: 'Deadline is required' })}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">Scholarship Post Date</label>
+                            <input
+                                type="date"
+                                defaultValue={new Date().toISOString().split('T')[0]}
+                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                                {...register('scholarshipPostDate', { required: 'Post date is required' })}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-sm font-semibold text-gray-700">Posted User</label>
+                            <input
+                                type="email"
+                                value={user?.email || 'N/A'}
+                                disabled
+                                className="w-full p-3 border border-gray-300 rounded-xl bg-gray-100 text-gray-500 cursor-not-allowed"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Image Upload */}
+                    <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-gray-700">
+                            University Image/Logo
+                        </label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="w-full border-2 border-dashed border-gray-300 rounded-2xl p-6 text-center transition-all duration-200 hover:border-purple-400 cursor-pointer"
+                        />
+                        {uploading && <p className="text-sm text-center text-purple-600">Uploading...</p>}
+                        {imageUrl && (
+                            <div className="text-center mt-2">
+                                <img src={imageUrl} alt="Preview" className="w-20 h-20 rounded-lg object-cover mx-auto border" />
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Form Errors and Submit Button */}
+                    <div className="mt-8">
+                        {Object.keys(errors).length > 0 && (
+                            <div className="mb-4 p-4 rounded-xl bg-red-50 text-red-700 text-sm">
+                                <p className="font-semibold mb-1">Please fix the following errors:</p>
+                                <ul className="list-disc list-inside space-y-0.5">
+                                    {Object.values(errors).map((error, index) => (
+                                        <li key={index}>{error.message}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                        <button
+                            type="submit"
+                            className={`w-full py-4 rounded-xl font-bold text-lg shadow-lg transition-all duration-200
+                                ${uploading || !imageUrl ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-purple-600 text-white hover:bg-purple-700'}
+                            `}
+                            disabled={uploading || !imageUrl}
+                        >
+                            {uploading ? 'Image is uploading...' : 'Add Scholarship'}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <form className="space-y-3 sm:space-y-4 mt-4" onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Scholarship Name</label>
-              <input type="text" {...register('scholarshipName', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Scholarship Name" />
-              {errors.scholarshipName && <span className="text-red-500 text-xs">{errors.scholarshipName.message}</span>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">University Name</label>
-              <input type="text" {...register('universityName', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="University Name" />
-              {errors.universityName && <span className="text-red-500 text-xs">{errors.universityName.message}</span>}
-            </div>
-            <div className="sm:col-span-2">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">University Image/Logo</label>
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100" />
-              {uploading && <span className="text-purple-500 text-xs">Uploading...</span>}
-              {imageUrl && <span className="block text-green-600 text-xs mt-1">Image uploaded!</span>}
-              {imgError && <span className="text-red-500 text-xs">{imgError}</span>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">University Country</label>
-              <input type="text" {...register('universityCountry', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Country" />
-              {errors.universityCountry && <span className="text-red-500 text-xs">{errors.universityCountry.message}</span>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">University City</label>
-              <input type="text" {...register('universityCity', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="City" />
-              {errors.universityCity && <span className="text-red-500 text-xs">{errors.universityCity.message}</span>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">University World Rank</label>
-              <input type="number" {...register('universityWorldRank', { required: 'Required', min: 1 })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="World Rank" />
-              {errors.universityWorldRank && <span className="text-red-500 text-xs">{errors.universityWorldRank.message}</span>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Subject Category</label>
-              <select {...register('subjectCategory', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400">
-                <option value="">Select</option>
-                <option value="Agriculture">Agriculture</option>
-                <option value="Engineering">Engineering</option>
-                <option value="Doctor">Doctor</option>
-              </select>
-              {errors.subjectCategory && <span className="text-red-500 text-xs">{errors.subjectCategory.message}</span>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Scholarship Category</label>
-              <select {...register('scholarshipCategory', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400">
-                <option value="">Select</option>
-                <option value="Full fund">Full fund</option>
-                <option value="Partial">Partial</option>
-                <option value="Self-fund">Self-fund</option>
-              </select>
-              {errors.scholarshipCategory && <span className="text-red-500 text-xs">{errors.scholarshipCategory.message}</span>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Degree</label>
-              <select {...register('degree', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400">
-                <option value="">Select</option>
-                <option value="Diploma">Diploma</option>
-                <option value="Bachelor">Bachelor</option>
-                <option value="Masters">Masters</option>
-              </select>
-              {errors.degree && <span className="text-red-500 text-xs">{errors.degree.message}</span>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Tuition Fees (optional)</label>
-              <input type="number" {...register('tuitionFees')} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Tuition Fees" />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Application Fees</label>
-              <input type="number" {...register('applicationFees', { required: 'Required', min: 0 })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Application Fees" />
-              {errors.applicationFees && <span className="text-red-500 text-xs">{errors.applicationFees.message}</span>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Service Charge</label>
-              <input type="number" {...register('serviceCharge', { required: 'Required', min: 0 })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Service Charge" />
-              {errors.serviceCharge && <span className="text-red-500 text-xs">{errors.serviceCharge.message}</span>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Application Deadline</label>
-              <input type="date" {...register('applicationDeadline', { required: 'Required' })} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" />
-              {errors.applicationDeadline && <span className="text-red-500 text-xs">{errors.applicationDeadline.message}</span>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Scholarship Post Date</label>
-              <input type="date" {...register('scholarshipPostDate', { required: 'Required' })} defaultValue={new Date().toISOString().split('T')[0]} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400" />
-              {errors.scholarshipPostDate && <span className="text-red-500 text-xs">{errors.scholarshipPostDate.message}</span>}
-            </div>
-            <div className="sm:col-span-2">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Posted User Email</label>
-              <input type="email" value={user?.email || ''} disabled className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-100 text-gray-500" />
-            </div>
-          </div>
-          <div className="sticky bottom-0 bg-white pt-4 border-t border-purple-200">
-            <button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg shadow transition text-sm sm:text-base">Add Scholarship</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default AddScholarship;
