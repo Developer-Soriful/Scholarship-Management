@@ -205,7 +205,7 @@ const Home = () => {
                                 <FaDollarSign className="text-orange-600 text-2xl animate-bounce" />
                             </div>
                             <div className="text-3xl font-bold text-orange-600 mb-1">
-                                {isLoading ? '...' : `$${averageFee.toString().slice(0, 10)}`}
+                                {isLoading ? '...' : `$${averageFee.toString().slice(0, 6)}`}
                             </div>
                             <div className="text-sm font-semibold text-gray-600">Avg. Application Fee</div>
                         </div>
